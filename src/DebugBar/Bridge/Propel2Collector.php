@@ -63,7 +63,7 @@ class Propel2Collector extends DataCollector implements Renderable, AssetProvide
     /**
      * @param ConnectionInterface $connection Propel connection
      */
-    public function __construct(
+    #[\ReturnTypeWillChange] public function __construct(
         ConnectionInterface $connection,
         array $logMethods = array(
             'beginTransaction',
@@ -96,7 +96,7 @@ class Propel2Collector extends DataCollector implements Renderable, AssetProvide
     /**
      * @return TestHandler|null
      */
-    public function getHandler()
+    #[\ReturnTypeWillChange] public function getHandler()
     {
         return $this->handler;
     }
@@ -104,7 +104,7 @@ class Propel2Collector extends DataCollector implements Renderable, AssetProvide
     /**
      * @return array
      */
-    public function getConfig()
+    #[\ReturnTypeWillChange] public function getConfig()
     {
         return $this->config;
     }
@@ -112,7 +112,7 @@ class Propel2Collector extends DataCollector implements Renderable, AssetProvide
     /**
      * @return Logger|null
      */
-    public function getLogger()
+    #[\ReturnTypeWillChange] public function getLogger()
     {
         return $this->logger;
     }
@@ -219,7 +219,7 @@ class Propel2Collector extends DataCollector implements Renderable, AssetProvide
     /**
      * @return array
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         if (count($this->errors)) {
             return array(
@@ -241,12 +241,12 @@ class Propel2Collector extends DataCollector implements Renderable, AssetProvide
             return false === $statement['is_success'];
         }));
         $accumulatedDuration = array_reduce($statements, function ($accumulatedDuration, $statement) {
-        
+
             $time = isset($statement['duration']) ? $statement['duration'] : 0;
             return $accumulatedDuration += $time;
         });
         $memoryUsage = array_reduce($statements, function ($memoryUsage, $statement) {
-        
+
             $time = isset($statement['memory']) ? $statement['memory'] : 0;
             return $memoryUsage += $time;
         });
@@ -265,7 +265,7 @@ class Propel2Collector extends DataCollector implements Renderable, AssetProvide
     /**
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         $additionalName  = '';
         if ($this->getLogger() !== $this->getDefaultLogger()) {
@@ -278,7 +278,7 @@ class Propel2Collector extends DataCollector implements Renderable, AssetProvide
     /**
      * @return array
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return array(
             $this->getName() => array(
@@ -297,7 +297,7 @@ class Propel2Collector extends DataCollector implements Renderable, AssetProvide
     /**
      * @return array
      */
-    public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets()
     {
         return array(
             'css' => 'widgets/sqlqueries/widget.css',

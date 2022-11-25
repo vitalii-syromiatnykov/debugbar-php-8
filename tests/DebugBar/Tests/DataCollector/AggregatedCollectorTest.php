@@ -7,12 +7,12 @@ use DebugBar\DataCollector\AggregatedCollector;
 
 class AggregatedCollectorTest extends DebugBarTestCase
 {
-    public function setUp(): void
+    #[\ReturnTypeWillChange] public function setUp(): void
     {
         $this->c = new AggregatedCollector('test');
     }
 
-    public function testAddCollector()
+    #[\ReturnTypeWillChange] public function testAddCollector()
     {
         $this->c->addCollector($c = new MockCollector());
         $this->assertContains($c, $this->c->getCollectors());
@@ -20,7 +20,7 @@ class AggregatedCollectorTest extends DebugBarTestCase
         $this->assertTrue(isset($this->c['mock']));
     }
 
-    public function testCollect()
+    #[\ReturnTypeWillChange] public function testCollect()
     {
         $this->c->addCollector(new MockCollector(array('foo' => 'bar'), 'm1'));
         $this->c->addCollector(new MockCollector(array('bar' => 'foo'), 'm2'));
@@ -32,7 +32,7 @@ class AggregatedCollectorTest extends DebugBarTestCase
         $this->assertEquals('foo', $data['bar']);
     }
 
-    public function testMergeProperty()
+    #[\ReturnTypeWillChange] public function testMergeProperty()
     {
         $this->c->addCollector(new MockCollector(array('foo' => array('a' => 'b')), 'm1'));
         $this->c->addCollector(new MockCollector(array('foo' => array('c' => 'd')), 'm2'));
@@ -45,7 +45,7 @@ class AggregatedCollectorTest extends DebugBarTestCase
         $this->assertEquals('d', $data['c']);
     }
 
-    public function testSort()
+    #[\ReturnTypeWillChange] public function testSort()
     {
         $this->c->addCollector(new MockCollector(array(array('foo' => 2, 'id' => 1)), 'm1'));
         $this->c->addCollector(new MockCollector(array(array('foo' => 1, 'id' => 2)), 'm2'));

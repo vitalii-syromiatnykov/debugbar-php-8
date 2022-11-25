@@ -31,12 +31,12 @@ same time the `DebugBar::collect()` method is called.
 
     class MyDataCollector extends DebugBar\DataCollector\DataCollector
     {
-        public function collect()
+        #[\ReturnTypeWillChange] public function collect()
         {
             return array("uniqid" => uniqid());
         }
 
-        public function getName()
+        #[\ReturnTypeWillChange] public function getName()
         {
             return 'mycollector';
         }
@@ -56,7 +56,7 @@ in `JavascriptRenderer::addControl($name, $options)` (see Rendering chapter).
     {
         // ...
 
-        public function getWidgets()
+        #[\ReturnTypeWillChange] public function getWidgets()
         {
             return array(
                 "mycollector" => array(
@@ -103,7 +103,7 @@ Example:
     {
         // ...
 
-        public function getWidgets()
+        #[\ReturnTypeWillChange] public function getWidgets()
         {
             return array(
                 "database" => array(
@@ -115,7 +115,7 @@ Example:
             );
         }
 
-        public function getAssets()
+        #[\ReturnTypeWillChange] public function getAssets()
         {
             return array(
                 'css' => 'widgets/sqlqueries/widget.css',

@@ -22,7 +22,7 @@ class DataFormatter implements DataFormatterInterface
     /**
      * DataFormatter constructor.
      */
-    public function __construct()
+    #[\ReturnTypeWillChange] public function __construct()
     {
         $this->cloner = new VarCloner();
         $this->dumper = new CliDumper();
@@ -32,7 +32,7 @@ class DataFormatter implements DataFormatterInterface
      * @param $data
      * @return string
      */
-    public function formatVar($data)
+    #[\ReturnTypeWillChange] public function formatVar($data)
     {
         $output = '';
 
@@ -54,7 +54,7 @@ class DataFormatter implements DataFormatterInterface
      * @param float $seconds
      * @return string
      */
-    public function formatDuration($seconds)
+    #[\ReturnTypeWillChange] public function formatDuration($seconds)
     {
         if ($seconds < 0.001) {
             return round($seconds * 1000000) . 'μs';
@@ -71,7 +71,7 @@ class DataFormatter implements DataFormatterInterface
      * @param int $precision
      * @return string
      */
-    public function formatBytes($size, $precision = 2)
+    #[\ReturnTypeWillChange] public function formatBytes($size, $precision = 2)
     {
         if ($size === 0 || $size === null) {
             return "0B";

@@ -26,7 +26,7 @@ class RequestDataCollector extends DataCollector implements Renderable, AssetPro
      * @param bool $value
      * @return $this
      */
-    public function useHtmlVarDumper($value = true)
+    #[\ReturnTypeWillChange] public function useHtmlVarDumper($value = true)
     {
         $this->useHtmlVarDumper = $value;
         return $this;
@@ -38,7 +38,7 @@ class RequestDataCollector extends DataCollector implements Renderable, AssetPro
      *
      * @return mixed
      */
-    public function isHtmlVarDumperUsed()
+    #[\ReturnTypeWillChange] public function isHtmlVarDumperUsed()
     {
         return $this->useHtmlVarDumper;
     }
@@ -46,7 +46,7 @@ class RequestDataCollector extends DataCollector implements Renderable, AssetPro
     /**
      * @return array
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         $vars = array('_GET', '_POST', '_SESSION', '_COOKIE', '_SERVER');
         $data = array();
@@ -68,7 +68,7 @@ class RequestDataCollector extends DataCollector implements Renderable, AssetPro
     /**
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'request';
     }
@@ -76,14 +76,14 @@ class RequestDataCollector extends DataCollector implements Renderable, AssetPro
     /**
      * @return array
      */
-    public function getAssets() {
+    #[\ReturnTypeWillChange] public function getAssets() {
         return $this->isHtmlVarDumperUsed() ? $this->getVarDumper()->getAssets() : array();
     }
 
     /**
      * @return array
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         $widget = $this->isHtmlVarDumperUsed()
             ? "PhpDebugBar.Widgets.HtmlVariableListWidget"

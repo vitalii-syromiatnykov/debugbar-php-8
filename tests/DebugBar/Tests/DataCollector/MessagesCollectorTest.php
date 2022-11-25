@@ -7,7 +7,7 @@ use DebugBar\DataCollector\MessagesCollector;
 
 class MessagesCollectorTest extends DebugBarTestCase
 {
-    public function testAddMessageAndLog()
+    #[\ReturnTypeWillChange] public function testAddMessageAndLog()
     {
         $c = new MessagesCollector();
         $c->addMessage('foobar');
@@ -17,7 +17,7 @@ class MessagesCollectorTest extends DebugBarTestCase
         $this->assertCount(2, $c->getMessages());
     }
 
-    public function testAggregate()
+    #[\ReturnTypeWillChange] public function testAggregate()
     {
         $a = new MessagesCollector('a');
         $c = new MessagesCollector('c');
@@ -30,7 +30,7 @@ class MessagesCollectorTest extends DebugBarTestCase
         $this->assertEquals('a', $msgs[1]['collector']);
     }
 
-    public function testCollect()
+    #[\ReturnTypeWillChange] public function testCollect()
     {
         $c = new MessagesCollector();
         $c->addMessage('foo');
@@ -39,7 +39,7 @@ class MessagesCollectorTest extends DebugBarTestCase
         $this->assertEquals($c->getMessages(), $data['messages']);
     }
 
-    public function testAssets()
+    #[\ReturnTypeWillChange] public function testAssets()
     {
         $c = new MessagesCollector();
         $this->assertEmpty($c->getAssets());
@@ -48,7 +48,7 @@ class MessagesCollectorTest extends DebugBarTestCase
         $this->assertNotEmpty($c->getAssets());
     }
 
-    public function testHtmlMessages()
+    #[\ReturnTypeWillChange] public function testHtmlMessages()
     {
         $var = array('one', 'two');
 

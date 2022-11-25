@@ -13,7 +13,7 @@ class DebugBarVarDumperTest extends DebugBarTestCase
         'default' => self::STYLE_STRING,
     );
 
-    public function testBasicFunctionality()
+    #[\ReturnTypeWillChange] public function testBasicFunctionality()
     {
         // Test that we can render a simple variable without dump headers
         $d = new DebugBarVarDumper();
@@ -35,7 +35,7 @@ class DebugBarVarDumperTest extends DebugBarTestCase
         $this->assertStringNotContainsString(self::STYLE_STRING, $out); // make sure there's no dump header
     }
 
-    public function testSeeking()
+    #[\ReturnTypeWillChange] public function testSeeking()
     {
         $testData = array(
             'one',
@@ -60,7 +60,7 @@ class DebugBarVarDumperTest extends DebugBarTestCase
         $this->assertStringNotContainsString('three', $out);
     }
 
-    public function testAssetProvider()
+    #[\ReturnTypeWillChange] public function testAssetProvider()
     {
         $d = new DebugBarVarDumper();
         $d->mergeDumperOptions(array('styles' => $this->testStyles));
@@ -76,7 +76,7 @@ class DebugBarVarDumperTest extends DebugBarTestCase
         $this->assertStringContainsString(self::STYLE_STRING, $assetText);
     }
 
-    public function testBasicOptionOperations()
+    #[\ReturnTypeWillChange] public function testBasicOptionOperations()
     {
         // Test basic get/merge/reset functionality for cloner
         $d = new DebugBarVarDumper();
@@ -137,7 +137,7 @@ class DebugBarVarDumperTest extends DebugBarTestCase
         ), $options);
     }
 
-    public function testClonerOptions()
+    #[\ReturnTypeWillChange] public function testClonerOptions()
     {
         // Test the actual operation of the cloner options
         $d = new DebugBarVarDumper();
@@ -217,7 +217,7 @@ class DebugBarVarDumperTest extends DebugBarTestCase
         }
     }
 
-    public function testDumperOptions()
+    #[\ReturnTypeWillChange] public function testDumperOptions()
     {
         // Test the actual operation of the dumper options
         $d = new DebugBarVarDumper();

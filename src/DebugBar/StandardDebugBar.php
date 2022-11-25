@@ -22,7 +22,7 @@ use DebugBar\DataCollector\TimeDataCollector;
  */
 class StandardDebugBar extends DebugBar
 {
-    public function __construct()
+    #[\ReturnTypeWillChange] public function __construct()
     {
         $this->addCollector(new PhpInfoCollector());
         $this->addCollector(new MessagesCollector());

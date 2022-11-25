@@ -74,7 +74,7 @@ class PropelCollector extends DataCollector implements BasicLogger, Renderable, 
      * @param LoggerInterface $logger A logger to forward non-query log lines to
      * @param PropelPDO $conn Bound this collector to a connection only
      */
-    public function __construct(LoggerInterface $logger = null, PropelPDO $conn = null)
+    #[\ReturnTypeWillChange] public function __construct(LoggerInterface $logger = null, PropelPDO $conn = null)
     {
         if ($conn) {
             $conn->setLogger($this);
@@ -85,58 +85,58 @@ class PropelCollector extends DataCollector implements BasicLogger, Renderable, 
         $this->logQueriesToLogger = false;
     }
 
-    public function setLogQueriesToLogger($enable = true)
+    #[\ReturnTypeWillChange] public function setLogQueriesToLogger($enable = true)
     {
         $this->logQueriesToLogger = $enable;
         return $this;
     }
 
-    public function isLogQueriesToLogger()
+    #[\ReturnTypeWillChange] public function isLogQueriesToLogger()
     {
         return $this->logQueriesToLogger;
     }
 
-    public function emergency($m)
+    #[\ReturnTypeWillChange] public function emergency($m)
     {
         $this->log($m, Propel::LOG_EMERG);
     }
 
-    public function alert($m)
+    #[\ReturnTypeWillChange] public function alert($m)
     {
         $this->log($m, Propel::LOG_ALERT);
     }
 
-    public function crit($m)
+    #[\ReturnTypeWillChange] public function crit($m)
     {
         $this->log($m, Propel::LOG_CRIT);
     }
 
-    public function err($m)
+    #[\ReturnTypeWillChange] public function err($m)
     {
         $this->log($m, Propel::LOG_ERR);
     }
 
-    public function warning($m)
+    #[\ReturnTypeWillChange] public function warning($m)
     {
         $this->log($m, Propel::LOG_WARNING);
     }
 
-    public function notice($m)
+    #[\ReturnTypeWillChange] public function notice($m)
     {
         $this->log($m, Propel::LOG_NOTICE);
     }
 
-    public function info($m)
+    #[\ReturnTypeWillChange] public function info($m)
     {
         $this->log($m, Propel::LOG_INFO);
     }
 
-    public function debug($m)
+    #[\ReturnTypeWillChange] public function debug($m)
     {
         $this->log($m, Propel::LOG_DEBUG);
     }
 
-    public function log($message, $severity = null)
+    #[\ReturnTypeWillChange] public function log($message, $severity = null)
     {
         if (strpos($message, 'DebugPDOStatement::execute') !== false) {
             list($sql, $duration_str) = $this->parseAndLogSqlQuery($message);
@@ -209,7 +209,7 @@ class PropelCollector extends DataCollector implements BasicLogger, Renderable, 
         return array($sql, $this->formatDuration($duration));
     }
 
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         return array(
             'nb_statements' => count($this->statements),
@@ -222,12 +222,12 @@ class PropelCollector extends DataCollector implements BasicLogger, Renderable, 
         );
     }
 
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'propel';
     }
 
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return array(
             "propel" => array(
@@ -243,7 +243,7 @@ class PropelCollector extends DataCollector implements BasicLogger, Renderable, 
         );
     }
 
-    public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets()
     {
         return array(
             'css' => 'widgets/sqlqueries/widget.css',

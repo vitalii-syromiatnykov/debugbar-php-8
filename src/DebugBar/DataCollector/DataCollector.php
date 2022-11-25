@@ -57,7 +57,7 @@ abstract class DataCollector implements DataCollectorInterface
      * @param DataFormatterInterface $formater
      * @return $this
      */
-    public function setDataFormatter(DataFormatterInterface $formater)
+    #[\ReturnTypeWillChange] public function setDataFormatter(DataFormatterInterface $formater)
     {
         $this->dataFormater = $formater;
         return $this;
@@ -66,7 +66,7 @@ abstract class DataCollector implements DataCollectorInterface
     /**
      * @return DataFormatterInterface
      */
-    public function getDataFormatter()
+    #[\ReturnTypeWillChange] public function getDataFormatter()
     {
         if ($this->dataFormater === null) {
             $this->dataFormater = self::getDefaultDataFormatter();
@@ -85,7 +85,7 @@ abstract class DataCollector implements DataCollectorInterface
      * @var bool     $ajax should be used to open the url instead of a normal links
      * }
      */
-    public function getXdebugLink($file, $line = 1)
+    #[\ReturnTypeWillChange] public function getXdebugLink($file, $line = 1)
     {
         if (count($this->xdebugReplacements)) {
             $file = strtr($file, $this->xdebugReplacements);
@@ -96,8 +96,8 @@ abstract class DataCollector implements DataCollectorInterface
             return ['url' => $url, 'ajax' => $this->getXdebugShouldUseAjax()];
         }
     }
-  
-    /**  
+
+    /**
      * Sets the default variable dumper used by all collectors subclassing this class
      *
      * @param DebugBarVarDumper $varDumper
@@ -126,7 +126,7 @@ abstract class DataCollector implements DataCollectorInterface
      * @param DebugBarVarDumper $varDumper
      * @return $this
      */
-    public function setVarDumper(DebugBarVarDumper $varDumper)
+    #[\ReturnTypeWillChange] public function setVarDumper(DebugBarVarDumper $varDumper)
     {
         $this->varDumper = $varDumper;
         return $this;
@@ -138,7 +138,7 @@ abstract class DataCollector implements DataCollectorInterface
      *
      * @return DebugBarVarDumper
      */
-    public function getVarDumper()
+    #[\ReturnTypeWillChange] public function getVarDumper()
     {
         if ($this->varDumper === null) {
             $this->varDumper = self::getDefaultVarDumper();
@@ -149,7 +149,7 @@ abstract class DataCollector implements DataCollectorInterface
     /**
      * @deprecated
      */
-    public function formatVar($var)
+    #[\ReturnTypeWillChange] public function formatVar($var)
     {
         return $this->getDataFormatter()->formatVar($var);
     }
@@ -157,7 +157,7 @@ abstract class DataCollector implements DataCollectorInterface
     /**
      * @deprecated
      */
-    public function formatDuration($seconds)
+    #[\ReturnTypeWillChange] public function formatDuration($seconds)
     {
         return $this->getDataFormatter()->formatDuration($seconds);
     }
@@ -165,7 +165,7 @@ abstract class DataCollector implements DataCollectorInterface
     /**
      * @deprecated
      */
-    public function formatBytes($size, $precision = 2)
+    #[\ReturnTypeWillChange] public function formatBytes($size, $precision = 2)
     {
         return $this->getDataFormatter()->formatBytes($size, $precision);
     }
@@ -173,7 +173,7 @@ abstract class DataCollector implements DataCollectorInterface
     /**
      * @return string
      */
-    public function getXdebugLinkTemplate()
+    #[\ReturnTypeWillChange] public function getXdebugLinkTemplate()
     {
         if (empty($this->xdebugLinkTemplate) && !empty(ini_get('xdebug.file_link_format'))) {
             $this->xdebugLinkTemplate = ini_get('xdebug.file_link_format');
@@ -186,7 +186,7 @@ abstract class DataCollector implements DataCollectorInterface
      * @param string $xdebugLinkTemplate
      * @param bool $shouldUseAjax
      */
-    public function setXdebugLinkTemplate($xdebugLinkTemplate, $shouldUseAjax = false)
+    #[\ReturnTypeWillChange] public function setXdebugLinkTemplate($xdebugLinkTemplate, $shouldUseAjax = false)
     {
         if ($xdebugLinkTemplate === 'idea') {
             $this->xdebugLinkTemplate  = 'http://localhost:63342/api/file/?file=%f&line=%l';
@@ -200,7 +200,7 @@ abstract class DataCollector implements DataCollectorInterface
     /**
      * @return bool
      */
-    public function getXdebugShouldUseAjax()
+    #[\ReturnTypeWillChange] public function getXdebugShouldUseAjax()
     {
         return $this->xdebugShouldUseAjax;
     }
@@ -214,7 +214,7 @@ abstract class DataCollector implements DataCollectorInterface
      *
      * @return array key-value-pairs of replacements, key = path on server, value = replacement
      */
-    public function getXdebugReplacements()
+    #[\ReturnTypeWillChange] public function getXdebugReplacements()
     {
         return $this->xdebugReplacements;
     }
@@ -222,12 +222,12 @@ abstract class DataCollector implements DataCollectorInterface
     /**
      * @param array $xdebugReplacements
      */
-    public function setXdebugReplacements($xdebugReplacements)
+    #[\ReturnTypeWillChange] public function setXdebugReplacements($xdebugReplacements)
     {
         $this->xdebugReplacements = $xdebugReplacements;
     }
 
-    public function setXdebugReplacement($serverPath, $replacement)
+    #[\ReturnTypeWillChange] public function setXdebugReplacement($serverPath, $replacement)
     {
         $this->xdebugReplacements[$serverPath] = $replacement;
     }

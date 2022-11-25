@@ -41,7 +41,7 @@ class TimeDataCollector extends DataCollector implements Renderable
     /**
      * @param float $requestStartTime
      */
-    public function __construct($requestStartTime = null)
+    #[\ReturnTypeWillChange] public function __construct($requestStartTime = null)
     {
         if ($requestStartTime === null) {
             if (isset($_SERVER['REQUEST_TIME_FLOAT'])) {
@@ -60,7 +60,7 @@ class TimeDataCollector extends DataCollector implements Renderable
      * @param string|null $label Public name
      * @param string|null $collector The source of the collector
      */
-    public function startMeasure($name, $label = null, $collector = null)
+    #[\ReturnTypeWillChange] public function startMeasure($name, $label = null, $collector = null)
     {
         $start = microtime(true);
         $this->startedMeasures[$name] = array(
@@ -76,7 +76,7 @@ class TimeDataCollector extends DataCollector implements Renderable
      * @param string $name
      * @return bool
      */
-    public function hasStartedMeasure($name)
+    #[\ReturnTypeWillChange] public function hasStartedMeasure($name)
     {
         return isset($this->startedMeasures[$name]);
     }
@@ -88,7 +88,7 @@ class TimeDataCollector extends DataCollector implements Renderable
      * @param array $params
      * @throws DebugBarException
      */
-    public function stopMeasure($name, $params = array())
+    #[\ReturnTypeWillChange] public function stopMeasure($name, $params = array())
     {
         $end = microtime(true);
         if (!$this->hasStartedMeasure($name)) {
@@ -113,7 +113,7 @@ class TimeDataCollector extends DataCollector implements Renderable
      * @param array $params
      * @param string|null $collector
      */
-    public function addMeasure($label, $start, $end, $params = array(), $collector = null)
+    #[\ReturnTypeWillChange] public function addMeasure($label, $start, $end, $params = array(), $collector = null)
     {
         $this->measures[] = array(
             'label' => $label,
@@ -136,7 +136,7 @@ class TimeDataCollector extends DataCollector implements Renderable
      * @param string|null $collector
      * @return mixed
      */
-    public function measure($label, \Closure $closure, $collector = null)
+    #[\ReturnTypeWillChange] public function measure($label, \Closure $closure, $collector = null)
     {
         $name = spl_object_hash($closure);
         $this->startMeasure($name, $label, $collector);
@@ -151,7 +151,7 @@ class TimeDataCollector extends DataCollector implements Renderable
      *
      * @return array
      */
-    public function getMeasures()
+    #[\ReturnTypeWillChange] public function getMeasures()
     {
         return $this->measures;
     }
@@ -161,7 +161,7 @@ class TimeDataCollector extends DataCollector implements Renderable
      *
      * @return float
      */
-    public function getRequestStartTime()
+    #[\ReturnTypeWillChange] public function getRequestStartTime()
     {
         return $this->requestStartTime;
     }
@@ -171,7 +171,7 @@ class TimeDataCollector extends DataCollector implements Renderable
      *
      * @return float
      */
-    public function getRequestEndTime()
+    #[\ReturnTypeWillChange] public function getRequestEndTime()
     {
         return $this->requestEndTime;
     }
@@ -181,7 +181,7 @@ class TimeDataCollector extends DataCollector implements Renderable
      *
      * @return float
      */
-    public function getRequestDuration()
+    #[\ReturnTypeWillChange] public function getRequestDuration()
     {
         if ($this->requestEndTime !== null) {
             return $this->requestEndTime - $this->requestStartTime;
@@ -193,7 +193,7 @@ class TimeDataCollector extends DataCollector implements Renderable
      * @return array
      * @throws DebugBarException
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         $this->requestEndTime = microtime(true);
         foreach (array_keys($this->startedMeasures) as $name) {
@@ -219,7 +219,7 @@ class TimeDataCollector extends DataCollector implements Renderable
     /**
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'time';
     }
@@ -227,7 +227,7 @@ class TimeDataCollector extends DataCollector implements Renderable
     /**
      * @return array
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return array(
             "time" => array(

@@ -21,7 +21,7 @@ class OpenHandler
      * @param DebugBar $debugBar
      * @throws DebugBarException
      */
-    public function __construct(DebugBar $debugBar)
+    #[\ReturnTypeWillChange] public function __construct(DebugBar $debugBar)
     {
         if (!$debugBar->isDataPersisted()) {
             throw new DebugBarException("DebugBar must have a storage backend to use OpenHandler");
@@ -38,7 +38,7 @@ class OpenHandler
      * @return string
      * @throws DebugBarException
      */
-    public function handle($request = null, $echo = true, $sendHeader = true)
+    #[\ReturnTypeWillChange] public function handle($request = null, $echo = true, $sendHeader = true)
     {
         if ($request === null) {
             $request = $_REQUEST;

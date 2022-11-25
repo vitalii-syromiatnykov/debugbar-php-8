@@ -38,7 +38,7 @@ class CacheCacheCollector extends MonologCollector
      * @param bool $level
      * @param bool $bubble
      */
-    public function __construct(Cache $cache = null, Logger $logger = null, $level = Logger::DEBUG, $bubble = true)
+    #[\ReturnTypeWillChange] public function __construct(Cache $cache = null, Logger $logger = null, $level = Logger::DEBUG, $bubble = true)
     {
         parent::__construct(null, $level, $bubble);
 
@@ -55,7 +55,7 @@ class CacheCacheCollector extends MonologCollector
     /**
      * @param Cache $cache
      */
-    public function addCache(Cache $cache)
+    #[\ReturnTypeWillChange] public function addCache(Cache $cache)
     {
         $backend = $cache->getBackend();
         if (!($backend instanceof LoggingBackend)) {
@@ -68,7 +68,7 @@ class CacheCacheCollector extends MonologCollector
     /**
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'cache';
     }

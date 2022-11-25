@@ -25,13 +25,13 @@ class SwiftMailCollector extends DataCollector implements Renderable, AssetProvi
 {
     protected $messagesLogger;
 
-    public function __construct(Swift_Mailer $mailer)
+    #[\ReturnTypeWillChange] public function __construct(Swift_Mailer $mailer)
     {
         $this->messagesLogger = new Swift_Plugins_MessageLogger();
         $mailer->registerPlugin($this->messagesLogger);
     }
 
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         $mails = array();
         foreach ($this->messagesLogger->getMessages() as $msg) {
@@ -60,12 +60,12 @@ class SwiftMailCollector extends DataCollector implements Renderable, AssetProvi
         return implode(', ', $f);
     }
 
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'swiftmailer_mails';
     }
 
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return array(
             'emails' => array(
@@ -82,7 +82,7 @@ class SwiftMailCollector extends DataCollector implements Renderable, AssetProvi
         );
     }
 
-    public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets()
     {
         return array(
             'css' => 'widgets/mails/widget.css',

@@ -55,13 +55,13 @@ methods on `DebugBarVarDumper`.
 A collector wishing to take advantage of this feature must call the `renderVar()` function and
 return the HTML result as part of the request dataset:
 
-    public function collectVariable($v)
+    #[\ReturnTypeWillChange] public function collectVariable($v)
     {
         // This will clone and then dump the variable in one operation:
         $this->variableHtml = $this->getVarDumper()->renderVar($v);
     }
 
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         return array('variableHtml' => $this->variableHtml);
     }
@@ -78,7 +78,7 @@ not take place by default, because not all collectors will use the variable dump
 
     class MyCollector extends DataCollector implements Renderable, AssetProvider
     {
-        public function getAssets() {
+        #[\ReturnTypeWillChange] public function getAssets() {
             return $this->getVarDumper()->getAssets();
         }
     }
@@ -89,7 +89,7 @@ of a cloned variable at a time.
 
     $testData = array('one', 'two', 'three');
     $cloned_variable = $this->getVarDumper()->captureVar($testData);
-    
+
     // Later, when you want to render it. Note the second parameter is $seekPath; here we specify
     // to only render the second array element (index 1). $html will therefore only contain 'two'.
     $html = $this->getVarDumper()->renderCapturedVar($cloned_variable, array(1));

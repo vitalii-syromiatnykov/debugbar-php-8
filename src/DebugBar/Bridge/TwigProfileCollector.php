@@ -70,7 +70,7 @@ class TwigProfileCollector extends DataCollector implements Renderable, AssetPro
      * @param \Twig_Profiler_Profile $profile
      * @param \Twig_LoaderInterface|\Twig_Environment $loaderOrEnv
      */
-    public function __construct(\Twig_Profiler_Profile $profile, $loaderOrEnv = null)
+    #[\ReturnTypeWillChange] public function __construct(\Twig_Profiler_Profile $profile, $loaderOrEnv = null)
     {
         $this->profile     = $profile;
         if ($loaderOrEnv instanceof \Twig_Environment) {
@@ -85,7 +85,7 @@ class TwigProfileCollector extends DataCollector implements Renderable, AssetPro
      *
      * @return array
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return array(
             'twig'       => array(
@@ -104,7 +104,7 @@ class TwigProfileCollector extends DataCollector implements Renderable, AssetPro
     /**
      * @return array
      */
-    public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets()
     {
         return array(
             'css' => 'widgets/templates/widget.css',
@@ -117,7 +117,7 @@ class TwigProfileCollector extends DataCollector implements Renderable, AssetPro
      *
      * @return array Collected data
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         $this->templateCount = $this->blockCount = $this->macroCount = 0;
         $this->templates     = array();
@@ -148,12 +148,12 @@ class TwigProfileCollector extends DataCollector implements Renderable, AssetPro
      *
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'twig';
     }
 
-    public function getHtmlCallGraph()
+    #[\ReturnTypeWillChange] public function getHtmlCallGraph()
     {
         $dumper = new \Twig_Profiler_Dumper_Html();
 
@@ -168,7 +168,7 @@ class TwigProfileCollector extends DataCollector implements Renderable, AssetPro
      *  @var bool ajax
      * }
      */
-    public function getXdebugLink($template, $line = 1)
+    #[\ReturnTypeWillChange] public function getXdebugLink($template, $line = 1)
     {
         if (is_null($this->loader)) {
             return null;

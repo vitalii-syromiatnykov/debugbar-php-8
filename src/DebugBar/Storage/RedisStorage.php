@@ -25,7 +25,7 @@ class RedisStorage implements StorageInterface
      * @param  \Predis\Client|\Redis $redis Redis Client
      * @param string $hash
      */
-    public function __construct($redis, $hash = 'phpdebugbar')
+    #[\ReturnTypeWillChange] public function __construct($redis, $hash = 'phpdebugbar')
     {
         $this->redis = $redis;
         $this->hash = $hash;
@@ -34,7 +34,7 @@ class RedisStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function save($id, $data)
+    #[\ReturnTypeWillChange] public function save($id, $data)
     {
         $this->redis->hSet("$this->hash:meta", $id, serialize($data['__meta']));
         unset($data['__meta']);
@@ -44,7 +44,7 @@ class RedisStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function get($id)
+    #[\ReturnTypeWillChange] public function get($id)
     {
         return array_merge(unserialize($this->redis->hGet("$this->hash:data", $id)),
             array('__meta' => unserialize($this->redis->hGet("$this->hash:meta", $id))));
@@ -53,7 +53,7 @@ class RedisStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function find(array $filters = [], $max = 20, $offset = 0)
+    #[\ReturnTypeWillChange] public function find(array $filters = [], $max = 20, $offset = 0)
     {
         $results = [];
         $cursor = "0";
@@ -98,7 +98,7 @@ class RedisStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function clear()
+    #[\ReturnTypeWillChange] public function clear()
     {
         $this->redis->del("$this->hash:data");
         $this->redis->del("$this->hash:meta");

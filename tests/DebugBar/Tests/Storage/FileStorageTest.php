@@ -9,7 +9,7 @@ class FileStorageTest extends DebugBarTestCase
 {
     private $dirname;
 
-    public function setUp(): void
+    #[\ReturnTypeWillChange] public function setUp(): void
     {
         $this->dirname = tempnam(sys_get_temp_dir(), 'debugbar');
         if (file_exists($this->dirname)) {
@@ -21,7 +21,7 @@ class FileStorageTest extends DebugBarTestCase
         $this->s->save('bar', $this->data);
     }
 
-    public function teardown(): void
+    #[\ReturnTypeWillChange] public function teardown(): void
     {
         $files = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($this->dirname, \RecursiveDirectoryIterator::SKIP_DOTS),
@@ -36,26 +36,26 @@ class FileStorageTest extends DebugBarTestCase
         rmdir($this->dirname);
     }
 
-    public function testSave()
+    #[\ReturnTypeWillChange] public function testSave()
     {
         $this->s->save('foo', $this->data);
         $this->assertFileExists($this->dirname . '/foo.json');
         $this->assertJsonStringEqualsJsonFile($this->dirname . '/foo.json', json_encode($this->data));
     }
 
-    public function testGet()
+    #[\ReturnTypeWillChange] public function testGet()
     {
         $data = $this->s->get('bar');
         $this->assertEquals($this->data, $data);
     }
 
-    public function testFind()
+    #[\ReturnTypeWillChange] public function testFind()
     {
         $results = $this->s->find();
         $this->assertContains($this->data['__meta'], $results);
     }
 
-    public function testClear()
+    #[\ReturnTypeWillChange] public function testClear()
     {
         $this->s->clear();
 

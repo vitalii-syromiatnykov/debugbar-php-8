@@ -20,7 +20,7 @@ class LocalizationCollector extends DataCollector implements Renderable
      *
      * @return string
      */
-    public function getLocale()
+    #[\ReturnTypeWillChange] public function getLocale()
     {
         return setlocale(LC_ALL, 0);
     }
@@ -30,7 +30,7 @@ class LocalizationCollector extends DataCollector implements Renderable
      *
      * @return string
      */
-    public function getDomain()
+    #[\ReturnTypeWillChange] public function getDomain()
     {
         return textdomain();
     }
@@ -38,7 +38,7 @@ class LocalizationCollector extends DataCollector implements Renderable
     /**
      * @return array
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         return array(
           'locale' => $this->getLocale(),
@@ -49,7 +49,7 @@ class LocalizationCollector extends DataCollector implements Renderable
     /**
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'localization';
     }
@@ -57,7 +57,7 @@ class LocalizationCollector extends DataCollector implements Renderable
     /**
      * @return array
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return array(
             'domain' => array(

@@ -31,7 +31,7 @@ class ExceptionsCollector extends DataCollector implements Renderable
      * @param Exception $e
      * @deprecated in favor on addThrowable
      */
-    public function addException(Exception $e)
+    #[\ReturnTypeWillChange] public function addException(Exception $e)
     {
         $this->addThrowable($e);
     }
@@ -41,7 +41,7 @@ class ExceptionsCollector extends DataCollector implements Renderable
      *
      * @param \Throwable $e
      */
-    public function addThrowable($e)
+    #[\ReturnTypeWillChange] public function addThrowable($e)
     {
         $this->exceptions[] = $e;
         if ($this->chainExceptions && $previous = $e->getPrevious()) {
@@ -54,7 +54,7 @@ class ExceptionsCollector extends DataCollector implements Renderable
      *
      * @param bool $chainExceptions
      */
-    public function setChainExceptions($chainExceptions = true)
+    #[\ReturnTypeWillChange] public function setChainExceptions($chainExceptions = true)
     {
         $this->chainExceptions = $chainExceptions;
     }
@@ -64,7 +64,7 @@ class ExceptionsCollector extends DataCollector implements Renderable
      *
      * @return array[\Throwable]
      */
-    public function getExceptions()
+    #[\ReturnTypeWillChange] public function getExceptions()
     {
         return $this->exceptions;
     }
@@ -76,7 +76,7 @@ class ExceptionsCollector extends DataCollector implements Renderable
      * @param bool $value
      * @return $this
      */
-    public function useHtmlVarDumper($value = true)
+    #[\ReturnTypeWillChange] public function useHtmlVarDumper($value = true)
     {
         $this->useHtmlVarDumper = $value;
         return $this;
@@ -88,12 +88,12 @@ class ExceptionsCollector extends DataCollector implements Renderable
      *
      * @return mixed
      */
-    public function isHtmlVarDumperUsed()
+    #[\ReturnTypeWillChange] public function isHtmlVarDumperUsed()
     {
         return $this->useHtmlVarDumper;
     }
 
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         return array(
             'count' => count($this->exceptions),
@@ -108,7 +108,7 @@ class ExceptionsCollector extends DataCollector implements Renderable
      * @return array
      * @deprecated in favor on formatThrowableData
      */
-    public function formatExceptionData(Exception $e)
+    #[\ReturnTypeWillChange] public function formatExceptionData(Exception $e)
     {
         return $this->formatThrowableData($e);
     }
@@ -119,7 +119,7 @@ class ExceptionsCollector extends DataCollector implements Renderable
      * @param \Throwable $e
      * @return array
      */
-    public function formatThrowableData($e)
+    #[\ReturnTypeWillChange] public function formatThrowableData($e)
     {
         $filePath = $e->getFile();
         if ($filePath && file_exists($filePath)) {
@@ -151,7 +151,7 @@ class ExceptionsCollector extends DataCollector implements Renderable
     /**
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'exceptions';
     }
@@ -159,7 +159,7 @@ class ExceptionsCollector extends DataCollector implements Renderable
     /**
      * @return array
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return array(
             'exceptions' => array(

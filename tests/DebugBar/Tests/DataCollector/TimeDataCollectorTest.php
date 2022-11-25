@@ -7,13 +7,13 @@ use DebugBar\DataCollector\TimeDataCollector;
 
 class TimeDataCollectorTest extends DebugBarTestCase
 {
-    public function setUp(): void
+    #[\ReturnTypeWillChange] public function setUp(): void
     {
         $this->s = microtime(true);
         $this->c = new TimeDataCollector($this->s);
     }
 
-    public function testAddMeasure()
+    #[\ReturnTypeWillChange] public function testAddMeasure()
     {
         $this->c->addMeasure('foo', $this->s, $this->s + 10, array('a' => 'b'), 'timer');
         $m = $this->c->getMeasures();
@@ -24,7 +24,7 @@ class TimeDataCollectorTest extends DebugBarTestCase
         $this->assertEquals('timer', $m[0]['collector']);
     }
 
-    public function testStartStopMeasure()
+    #[\ReturnTypeWillChange] public function testStartStopMeasure()
     {
         $this->c->startMeasure('foo', 'bar', 'baz');
         usleep(1000);
@@ -37,7 +37,7 @@ class TimeDataCollectorTest extends DebugBarTestCase
         $this->assertTrue($m[0]['start'] < $m[0]['end']);
     }
 
-    public function testCollect()
+    #[\ReturnTypeWillChange] public function testCollect()
     {
         $this->c->addMeasure('foo', 0, 10);
         $this->c->addMeasure('bar', 10, 20);
@@ -47,7 +47,7 @@ class TimeDataCollectorTest extends DebugBarTestCase
         $this->assertCount(2, $data['measures']);
     }
 
-    public function testMeasure()
+    #[\ReturnTypeWillChange] public function testMeasure()
     {
         $returned = $this->c->measure('bar', function() {
             return 'returnedValue';

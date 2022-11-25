@@ -20,7 +20,7 @@ class RequestIdGenerator implements RequestIdGeneratorInterface
     /**
      * @return string
      */
-    public function generate()
+    #[\ReturnTypeWillChange] public function generate()
     {
         if (function_exists('random_bytes')) {
             // PHP 7 only

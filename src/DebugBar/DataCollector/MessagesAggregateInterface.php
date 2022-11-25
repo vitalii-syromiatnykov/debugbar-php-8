@@ -17,5 +17,5 @@ interface MessagesAggregateInterface
      *
      * @return array
      */
-    public function getMessages();
+    #[\ReturnTypeWillChange] public function getMessages();
 }

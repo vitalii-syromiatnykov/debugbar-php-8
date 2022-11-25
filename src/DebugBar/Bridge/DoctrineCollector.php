@@ -39,7 +39,7 @@ class DoctrineCollector extends DataCollector implements Renderable, AssetProvid
      * @param $debugStackOrEntityManager
      * @throws DebugBarException
      */
-    public function __construct($debugStackOrEntityManager)
+    #[\ReturnTypeWillChange] public function __construct($debugStackOrEntityManager)
     {
         if ($debugStackOrEntityManager instanceof EntityManager) {
             $debugStackOrEntityManager = $debugStackOrEntityManager->getConnection()->getConfiguration()->getSQLLogger();
@@ -53,7 +53,7 @@ class DoctrineCollector extends DataCollector implements Renderable, AssetProvid
     /**
      * @return array
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         $queries = array();
         $totalExecTime = 0;
@@ -78,7 +78,7 @@ class DoctrineCollector extends DataCollector implements Renderable, AssetProvid
     /**
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'doctrine';
     }
@@ -86,7 +86,7 @@ class DoctrineCollector extends DataCollector implements Renderable, AssetProvid
     /**
      * @return array
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return array(
             "database" => array(
@@ -105,7 +105,7 @@ class DoctrineCollector extends DataCollector implements Renderable, AssetProvid
     /**
      * @return array
      */
-    public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets()
     {
         return array(
             'css' => 'widgets/sqlqueries/widget.css',

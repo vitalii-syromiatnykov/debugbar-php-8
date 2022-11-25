@@ -31,7 +31,7 @@ class MemcachedStorage implements StorageInterface
      * @param string $keyNamespace Namespace for Memcached key names (to avoid conflict with other Memcached users).
      * @param int $expiration Expiration for Memcached entries (see Expiration Times in Memcached documentation).
      */
-    public function __construct(Memcached $memcached, $keyNamespace = 'phpdebugbar', $expiration = 0)
+    #[\ReturnTypeWillChange] public function __construct(Memcached $memcached, $keyNamespace = 'phpdebugbar', $expiration = 0)
     {
         $this->memcached = $memcached;
         $this->keyNamespace = $keyNamespace;
@@ -41,7 +41,7 @@ class MemcachedStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function save($id, $data)
+    #[\ReturnTypeWillChange] public function save($id, $data)
     {
         $key = $this->createKey($id);
         $this->memcached->set($key, $data, $this->expiration);
@@ -56,7 +56,7 @@ class MemcachedStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function get($id)
+    #[\ReturnTypeWillChange] public function get($id)
     {
         return $this->memcached->get($this->createKey($id));
     }
@@ -64,7 +64,7 @@ class MemcachedStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function find(array $filters = array(), $max = 20, $offset = 0)
+    #[\ReturnTypeWillChange] public function find(array $filters = array(), $max = 20, $offset = 0)
     {
         if (!($keys = $this->memcached->get($this->keyNamespace))) {
             return array();
@@ -101,7 +101,7 @@ class MemcachedStorage implements StorageInterface
 
     /**
      * Filter the metadata for matches.
-     * 
+     *
      * @param  array $meta
      * @param  array $filters
      * @return bool
@@ -119,7 +119,7 @@ class MemcachedStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function clear()
+    #[\ReturnTypeWillChange] public function clear()
     {
         if (!($keys = $this->memcached->get($this->keyNamespace))) {
             return;
@@ -130,7 +130,7 @@ class MemcachedStorage implements StorageInterface
 
     /**
      * @param  string $id
-     * @return string 
+     * @return string
      */
     protected function createKey($id)
     {

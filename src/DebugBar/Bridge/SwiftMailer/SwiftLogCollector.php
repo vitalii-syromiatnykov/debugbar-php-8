@@ -22,17 +22,17 @@ use Swift_Plugins_LoggerPlugin;
  */
 class SwiftLogCollector extends MessagesCollector implements Swift_Plugins_Logger
 {
-    public function __construct(Swift_Mailer $mailer)
+    #[\ReturnTypeWillChange] public function __construct(Swift_Mailer $mailer)
     {
         $mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($this));
     }
 
-    public function add($entry)
+    #[\ReturnTypeWillChange] public function add($entry)
     {
         $this->addMessage($entry);
     }
 
-    public function dump()
+    #[\ReturnTypeWillChange] public function dump()
     {
         $dump = '';
         foreach ($this->messages as $message) {
@@ -46,7 +46,7 @@ class SwiftLogCollector extends MessagesCollector implements Swift_Plugins_Logge
         return $dump;
     }
 
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'swiftmailer_logs';
     }

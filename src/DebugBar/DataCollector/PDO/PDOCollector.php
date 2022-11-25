@@ -24,7 +24,7 @@ class PDOCollector extends DataCollector implements Renderable, AssetProvider
      * @param \PDO $pdo
      * @param TimeDataCollector $timeCollector
      */
-    public function __construct(\PDO $pdo = null, TimeDataCollector $timeCollector = null)
+    #[\ReturnTypeWillChange] public function __construct(\PDO $pdo = null, TimeDataCollector $timeCollector = null)
     {
         $this->timeCollector = $timeCollector;
         if ($pdo !== null) {
@@ -37,7 +37,7 @@ class PDOCollector extends DataCollector implements Renderable, AssetProvider
      *
      * @param boolean $enabled
      */
-    public function setRenderSqlWithParams($enabled = true, $quotationChar = '<>')
+    #[\ReturnTypeWillChange] public function setRenderSqlWithParams($enabled = true, $quotationChar = '<>')
     {
         $this->renderSqlWithParams = $enabled;
         $this->sqlQuotationChar = $quotationChar;
@@ -46,7 +46,7 @@ class PDOCollector extends DataCollector implements Renderable, AssetProvider
     /**
      * @return bool
      */
-    public function isSqlRenderedWithParams()
+    #[\ReturnTypeWillChange] public function isSqlRenderedWithParams()
     {
         return $this->renderSqlWithParams;
     }
@@ -54,7 +54,7 @@ class PDOCollector extends DataCollector implements Renderable, AssetProvider
     /**
      * @return string
      */
-    public function getSqlQuotationChar()
+    #[\ReturnTypeWillChange] public function getSqlQuotationChar()
     {
         return $this->sqlQuotationChar;
     }
@@ -65,7 +65,7 @@ class PDOCollector extends DataCollector implements Renderable, AssetProvider
      * @param TraceablePDO $pdo
      * @param string $name Optional connection name
      */
-    public function addConnection(\PDO $pdo, $name = null)
+    #[\ReturnTypeWillChange] public function addConnection(\PDO $pdo, $name = null)
     {
         if ($name === null) {
             $name = spl_object_hash($pdo);
@@ -81,7 +81,7 @@ class PDOCollector extends DataCollector implements Renderable, AssetProvider
      *
      * @return array
      */
-    public function getConnections()
+    #[\ReturnTypeWillChange] public function getConnections()
     {
         return $this->connections;
     }
@@ -89,7 +89,7 @@ class PDOCollector extends DataCollector implements Renderable, AssetProvider
     /**
      * @return array
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         $data = array(
             'nb_statements' => 0,
@@ -172,7 +172,7 @@ class PDOCollector extends DataCollector implements Renderable, AssetProvider
     /**
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'pdo';
     }
@@ -180,7 +180,7 @@ class PDOCollector extends DataCollector implements Renderable, AssetProvider
     /**
      * @return array
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return array(
             "database" => array(
@@ -199,7 +199,7 @@ class PDOCollector extends DataCollector implements Renderable, AssetProvider
     /**
      * @return array
      */
-    public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets()
     {
         return array(
             'css' => 'widgets/sqlqueries/widget.css',

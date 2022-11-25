@@ -11,24 +11,24 @@ class MockCollector extends DataCollector implements Renderable
     protected $name;
     protected $widgets;
 
-    public function __construct($data = array(), $name = 'mock', $widgets = array())
+    #[\ReturnTypeWillChange] public function __construct($data = array(), $name = 'mock', $widgets = array())
     {
         $this->data = $data;
         $this->name = $name;
         $this->widgets = $widgets;
     }
 
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         return $this->data;
     }
 
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return $this->name;
     }
 
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return $this->widgets;
     }

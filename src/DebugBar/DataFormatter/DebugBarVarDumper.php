@@ -101,7 +101,7 @@ class DebugBarVarDumper implements AssetProvider
      *
      * @return array
      */
-    public function getClonerOptions()
+    #[\ReturnTypeWillChange] public function getClonerOptions()
     {
         if ($this->clonerOptions === null) {
             $this->clonerOptions = self::$defaultClonerOptions;
@@ -124,7 +124,7 @@ class DebugBarVarDumper implements AssetProvider
      *
      * @param array $options
      */
-    public function mergeClonerOptions($options)
+    #[\ReturnTypeWillChange] public function mergeClonerOptions($options)
     {
         $this->clonerOptions = $options + $this->getClonerOptions();
         $this->cloner = null;
@@ -145,7 +145,7 @@ class DebugBarVarDumper implements AssetProvider
      *
      * @param array $options
      */
-    public function resetClonerOptions($options = null)
+    #[\ReturnTypeWillChange] public function resetClonerOptions($options = null)
     {
         $this->clonerOptions = ($options ?: array()) + self::$defaultClonerOptions;
         $this->cloner = null;
@@ -156,7 +156,7 @@ class DebugBarVarDumper implements AssetProvider
      *
      * @return array
      */
-    public function getDumperOptions()
+    #[\ReturnTypeWillChange] public function getDumperOptions()
     {
         if ($this->dumperOptions === null) {
             $this->dumperOptions = self::$defaultDumperOptions;
@@ -180,7 +180,7 @@ class DebugBarVarDumper implements AssetProvider
      *
      * @param array $options
      */
-    public function mergeDumperOptions($options)
+    #[\ReturnTypeWillChange] public function mergeDumperOptions($options)
     {
         $this->dumperOptions = $options + $this->getDumperOptions();
         $this->dumper = null;
@@ -202,7 +202,7 @@ class DebugBarVarDumper implements AssetProvider
      *
      * @param array $options
      */
-    public function resetDumperOptions($options = null)
+    #[\ReturnTypeWillChange] public function resetDumperOptions($options = null)
     {
         $this->dumperOptions = ($options ?: array()) + self::$defaultDumperOptions;
         $this->dumper = null;
@@ -214,7 +214,7 @@ class DebugBarVarDumper implements AssetProvider
      * @param mixed $data The variable to capture.
      * @return string Serialized variable data.
      */
-    public function captureVar($data)
+    #[\ReturnTypeWillChange] public function captureVar($data)
     {
         return serialize($this->getCloner()->cloneVar($data));
     }
@@ -251,7 +251,7 @@ class DebugBarVarDumper implements AssetProvider
      *                        of the data.
      * @return string HTML rendering of the variable.
      */
-    public function renderCapturedVar($capturedData, $seekPath = array())
+    #[\ReturnTypeWillChange] public function renderCapturedVar($capturedData, $seekPath = array())
     {
         $data = unserialize($capturedData);
         if (!method_exists($data, 'seek')) {
@@ -271,7 +271,7 @@ class DebugBarVarDumper implements AssetProvider
      * @param mixed $data The variable to capture and render.
      * @return string HTML rendering of the variable.
      */
-    public function renderVar($data)
+    #[\ReturnTypeWillChange] public function renderVar($data)
     {
         return $this->dump($this->getCloner()->cloneVar($data));
     }
@@ -281,7 +281,7 @@ class DebugBarVarDumper implements AssetProvider
      *
      * @return array
      */
-    public function getAssets() {
+    #[\ReturnTypeWillChange] public function getAssets() {
         $dumper = $this->getDumper();
         $dumper->resetDumpHeader(); // this will cause the default dump header to regenerate
         return array(

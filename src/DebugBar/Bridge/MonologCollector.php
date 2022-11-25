@@ -37,7 +37,7 @@ class MonologCollector extends AbstractProcessingHandler implements DataCollecto
      * @param boolean $bubble
      * @param string $name
      */
-    public function __construct(Logger $logger = null, $level = Logger::DEBUG, $bubble = true, $name = 'monolog')
+    #[\ReturnTypeWillChange] public function __construct(Logger $logger = null, $level = Logger::DEBUG, $bubble = true, $name = 'monolog')
     {
         parent::__construct($level, $bubble);
         $this->name = $name;
@@ -51,7 +51,7 @@ class MonologCollector extends AbstractProcessingHandler implements DataCollecto
      *
      * @param Logger $logger
      */
-    public function addLogger(Logger $logger)
+    #[\ReturnTypeWillChange] public function addLogger(Logger $logger)
     {
         $logger->pushHandler($this);
     }
@@ -72,7 +72,7 @@ class MonologCollector extends AbstractProcessingHandler implements DataCollecto
     /**
      * @return array
      */
-    public function getMessages()
+    #[\ReturnTypeWillChange] public function getMessages()
     {
         return $this->records;
     }
@@ -80,7 +80,7 @@ class MonologCollector extends AbstractProcessingHandler implements DataCollecto
     /**
      * @return array
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         return array(
             'count' => count($this->records),
@@ -91,7 +91,7 @@ class MonologCollector extends AbstractProcessingHandler implements DataCollecto
     /**
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return $this->name;
     }
@@ -99,7 +99,7 @@ class MonologCollector extends AbstractProcessingHandler implements DataCollecto
     /**
      * @return array
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         $name = $this->getName();
         return array(

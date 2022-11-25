@@ -76,7 +76,7 @@ class NamespacedTwigProfileCollector extends DataCollector implements Renderable
      * @param Profile $profile
      * @param LoaderInterface|Environment $loaderOrEnv
      */
-    public function __construct(Profile $profile, $loaderOrEnv = null)
+    #[\ReturnTypeWillChange] public function __construct(Profile $profile, $loaderOrEnv = null)
     {
         $this->profile = $profile;
         if ($loaderOrEnv instanceof Environment) {
@@ -91,7 +91,7 @@ class NamespacedTwigProfileCollector extends DataCollector implements Renderable
      *
      * @return array
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return [
             'twig' => [
@@ -110,7 +110,7 @@ class NamespacedTwigProfileCollector extends DataCollector implements Renderable
     /**
      * @return array
      */
-    public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets()
     {
         return [
             'css' => 'widgets/templates/widget.css',
@@ -123,7 +123,7 @@ class NamespacedTwigProfileCollector extends DataCollector implements Renderable
      *
      * @return array Collected data
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         $this->templateCount = $this->blockCount = $this->macroCount = 0;
         $this->templates = [];
@@ -154,12 +154,12 @@ class NamespacedTwigProfileCollector extends DataCollector implements Renderable
      *
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'twig';
     }
 
-    public function getHtmlCallGraph()
+    #[\ReturnTypeWillChange] public function getHtmlCallGraph()
     {
         $dumper = new HtmlDumper();
         return $dumper->dump($this->profile);
@@ -173,7 +173,7 @@ class NamespacedTwigProfileCollector extends DataCollector implements Renderable
      * @var bool ajax
      * }
      */
-    public function getXdebugLink($template, $line = 1)
+    #[\ReturnTypeWillChange] public function getXdebugLink($template, $line = 1)
     {
         if (is_null($this->loader)) {
             return null;

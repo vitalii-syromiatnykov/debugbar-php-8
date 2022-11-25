@@ -8,27 +8,27 @@ class MockStorage implements StorageInterface
 {
     public $data;
 
-    public function __construct(array $data = array())
+    #[\ReturnTypeWillChange] public function __construct(array $data = array())
     {
         $this->data = $data;
     }
 
-    public function save($id, $data)
+    #[\ReturnTypeWillChange] public function save($id, $data)
     {
         $this->data[$id] = $data;
     }
 
-    public function get($id)
+    #[\ReturnTypeWillChange] public function get($id)
     {
         return $this->data[$id];
     }
 
-    public function find(array $filters = array(), $max = 20, $offset = 0)
+    #[\ReturnTypeWillChange] public function find(array $filters = array(), $max = 20, $offset = 0)
     {
         return array_slice($this->data, $offset, $max);
     }
 
-    public function clear()
+    #[\ReturnTypeWillChange] public function clear()
     {
         $this->data = array();
     }

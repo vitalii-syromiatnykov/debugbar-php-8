@@ -24,7 +24,7 @@ use Twig_TokenStream;
 
 /**
  * Wrapped a Twig Environment to provide profiling features
- * 
+ *
  * @deprecated
  */
 class TraceableTwigEnvironment extends Twig_Environment
@@ -39,123 +39,123 @@ class TraceableTwigEnvironment extends Twig_Environment
      * @param Twig_Environment $twig
      * @param TimeDataCollector $timeDataCollector
      */
-    public function __construct(Twig_Environment $twig, TimeDataCollector $timeDataCollector = null)
+    #[\ReturnTypeWillChange] public function __construct(Twig_Environment $twig, TimeDataCollector $timeDataCollector = null)
     {
         $this->twig = $twig;
         $this->timeDataCollector = $timeDataCollector;
     }
 
-    public function __call($name, $arguments)
+    #[\ReturnTypeWillChange] public function __call($name, $arguments)
     {
         return call_user_func_array(array($this->twig, $name), $arguments);
     }
 
-    public function getRenderedTemplates()
+    #[\ReturnTypeWillChange] public function getRenderedTemplates()
     {
         return $this->renderedTemplates;
     }
 
-    public function addRenderedTemplate(array $info)
+    #[\ReturnTypeWillChange] public function addRenderedTemplate(array $info)
     {
         $this->renderedTemplates[] = $info;
     }
 
-    public function getTimeDataCollector()
+    #[\ReturnTypeWillChange] public function getTimeDataCollector()
     {
         return $this->timeDataCollector;
     }
 
-    public function getBaseTemplateClass()
+    #[\ReturnTypeWillChange] public function getBaseTemplateClass()
     {
         return $this->twig->getBaseTemplateClass();
     }
 
-    public function setBaseTemplateClass($class)
+    #[\ReturnTypeWillChange] public function setBaseTemplateClass($class)
     {
         $this->twig->setBaseTemplateClass($class);
     }
 
-    public function enableDebug()
+    #[\ReturnTypeWillChange] public function enableDebug()
     {
         $this->twig->enableDebug();
     }
 
-    public function disableDebug()
+    #[\ReturnTypeWillChange] public function disableDebug()
     {
         $this->twig->disableDebug();
     }
 
-    public function isDebug()
+    #[\ReturnTypeWillChange] public function isDebug()
     {
         return $this->twig->isDebug();
     }
 
-    public function enableAutoReload()
+    #[\ReturnTypeWillChange] public function enableAutoReload()
     {
         $this->twig->enableAutoReload();
     }
 
-    public function disableAutoReload()
+    #[\ReturnTypeWillChange] public function disableAutoReload()
     {
         $this->twig->disableAutoReload();
     }
 
-    public function isAutoReload()
+    #[\ReturnTypeWillChange] public function isAutoReload()
     {
         return $this->twig->isAutoReload();
     }
 
-    public function enableStrictVariables()
+    #[\ReturnTypeWillChange] public function enableStrictVariables()
     {
         $this->twig->enableStrictVariables();
     }
 
-    public function disableStrictVariables()
+    #[\ReturnTypeWillChange] public function disableStrictVariables()
     {
         $this->twig->disableStrictVariables();
     }
 
-    public function isStrictVariables()
+    #[\ReturnTypeWillChange] public function isStrictVariables()
     {
         return $this->twig->isStrictVariables();
     }
 
-    public function getCache($original = true)
+    #[\ReturnTypeWillChange] public function getCache($original = true)
     {
         return $this->twig->getCache($original);
     }
 
-    public function setCache($cache)
+    #[\ReturnTypeWillChange] public function setCache($cache)
     {
         $this->twig->setCache($cache);
     }
 
-    public function getCacheFilename($name)
+    #[\ReturnTypeWillChange] public function getCacheFilename($name)
     {
         return $this->twig->getCacheFilename($name);
     }
 
-    public function getTemplateClass($name, $index = null)
+    #[\ReturnTypeWillChange] public function getTemplateClass($name, $index = null)
     {
         return $this->twig->getTemplateClass($name, $index);
     }
 
-    public function getTemplateClassPrefix()
+    #[\ReturnTypeWillChange] public function getTemplateClassPrefix()
     {
         return $this->twig->getTemplateClassPrefix();
     }
 
-    public function render($name, array $context = array())
+    #[\ReturnTypeWillChange] public function render($name, array $context = array())
     {
         return $this->loadTemplate($name)->render($context);
     }
 
-    public function display($name, array $context = array())
+    #[\ReturnTypeWillChange] public function display($name, array $context = array())
     {
         $this->loadTemplate($name)->display($context);
     }
 
-    public function loadTemplate($name, $index = null)
+    #[\ReturnTypeWillChange] public function loadTemplate($name, $index = null)
     {
         $cls = $this->twig->getTemplateClass($name, $index);
 
@@ -182,237 +182,237 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->loadedTemplates[$cls] = new TraceableTwigTemplate($this, new $cls($this));
     }
 
-    public function isTemplateFresh($name, $time)
+    #[\ReturnTypeWillChange] public function isTemplateFresh($name, $time)
     {
         return $this->twig->isTemplateFresh($name, $time);
     }
 
-    public function resolveTemplate($names)
+    #[\ReturnTypeWillChange] public function resolveTemplate($names)
     {
         return $this->twig->resolveTemplate($names);
     }
 
-    public function clearTemplateCache()
+    #[\ReturnTypeWillChange] public function clearTemplateCache()
     {
         $this->twig->clearTemplateCache();
     }
 
-    public function clearCacheFiles()
+    #[\ReturnTypeWillChange] public function clearCacheFiles()
     {
         $this->twig->clearCacheFiles();
     }
 
-    public function getLexer()
+    #[\ReturnTypeWillChange] public function getLexer()
     {
         return $this->twig->getLexer();
     }
 
-    public function setLexer(Twig_LexerInterface $lexer)
+    #[\ReturnTypeWillChange] public function setLexer(Twig_LexerInterface $lexer)
     {
         $this->twig->setLexer($lexer);
     }
 
-    public function tokenize($source, $name = null)
+    #[\ReturnTypeWillChange] public function tokenize($source, $name = null)
     {
         return $this->twig->tokenize($source, $name);
     }
 
-    public function getParser()
+    #[\ReturnTypeWillChange] public function getParser()
     {
         return $this->twig->getParser();
     }
 
-    public function setParser(Twig_ParserInterface $parser)
+    #[\ReturnTypeWillChange] public function setParser(Twig_ParserInterface $parser)
     {
         $this->twig->setParser($parser);
     }
 
-    public function parse(Twig_TokenStream $tokens)
+    #[\ReturnTypeWillChange] public function parse(Twig_TokenStream $tokens)
     {
         return $this->twig->parse($tokens);
     }
 
-    public function getCompiler()
+    #[\ReturnTypeWillChange] public function getCompiler()
     {
         return $this->twig->getCompiler();
     }
 
-    public function setCompiler(Twig_CompilerInterface $compiler)
+    #[\ReturnTypeWillChange] public function setCompiler(Twig_CompilerInterface $compiler)
     {
         $this->twig->setCompiler($compiler);
     }
 
-    public function compile(Twig_NodeInterface $node)
+    #[\ReturnTypeWillChange] public function compile(Twig_NodeInterface $node)
     {
         return $this->twig->compile($node);
     }
 
-    public function compileSource($source, $name = null)
+    #[\ReturnTypeWillChange] public function compileSource($source, $name = null)
     {
         return $this->twig->compileSource($source, $name);
     }
 
-    public function setLoader(Twig_LoaderInterface $loader)
+    #[\ReturnTypeWillChange] public function setLoader(Twig_LoaderInterface $loader)
     {
         $this->twig->setLoader($loader);
     }
 
-    public function getLoader()
+    #[\ReturnTypeWillChange] public function getLoader()
     {
         return $this->twig->getLoader();
     }
 
-    public function setCharset($charset)
+    #[\ReturnTypeWillChange] public function setCharset($charset)
     {
         $this->twig->setCharset($charset);
     }
 
-    public function getCharset()
+    #[\ReturnTypeWillChange] public function getCharset()
     {
         return $this->twig->getCharset();
     }
 
-    public function initRuntime()
+    #[\ReturnTypeWillChange] public function initRuntime()
     {
         $this->twig->initRuntime();
     }
 
-    public function hasExtension($name)
+    #[\ReturnTypeWillChange] public function hasExtension($name)
     {
         return $this->twig->hasExtension($name);
     }
 
-    public function getExtension($name)
+    #[\ReturnTypeWillChange] public function getExtension($name)
     {
         return $this->twig->getExtension($name);
     }
 
-    public function addExtension(Twig_ExtensionInterface $extension)
+    #[\ReturnTypeWillChange] public function addExtension(Twig_ExtensionInterface $extension)
     {
         $this->twig->addExtension($extension);
     }
 
-    public function removeExtension($name)
+    #[\ReturnTypeWillChange] public function removeExtension($name)
     {
         $this->twig->removeExtension($name);
     }
 
-    public function setExtensions(array $extensions)
+    #[\ReturnTypeWillChange] public function setExtensions(array $extensions)
     {
         $this->twig->setExtensions($extensions);
     }
 
-    public function getExtensions()
+    #[\ReturnTypeWillChange] public function getExtensions()
     {
         return $this->twig->getExtensions();
     }
 
-    public function addTokenParser(Twig_TokenParserInterface $parser)
+    #[\ReturnTypeWillChange] public function addTokenParser(Twig_TokenParserInterface $parser)
     {
         $this->twig->addTokenParser($parser);
     }
 
-    public function getTokenParsers()
+    #[\ReturnTypeWillChange] public function getTokenParsers()
     {
         return $this->twig->getTokenParsers();
     }
 
-    public function getTags()
+    #[\ReturnTypeWillChange] public function getTags()
     {
         return $this->twig->getTags();
     }
 
-    public function addNodeVisitor(Twig_NodeVisitorInterface $visitor)
+    #[\ReturnTypeWillChange] public function addNodeVisitor(Twig_NodeVisitorInterface $visitor)
     {
         $this->twig->addNodeVisitor($visitor);
     }
 
-    public function getNodeVisitors()
+    #[\ReturnTypeWillChange] public function getNodeVisitors()
     {
         return $this->twig->getNodeVisitors();
     }
 
-    public function addFilter($name, $filter = null)
+    #[\ReturnTypeWillChange] public function addFilter($name, $filter = null)
     {
         $this->twig->addFilter($name, $filter);
     }
 
-    public function getFilter($name)
+    #[\ReturnTypeWillChange] public function getFilter($name)
     {
         return $this->twig->getFilter($name);
     }
 
-    public function registerUndefinedFilterCallback($callable)
+    #[\ReturnTypeWillChange] public function registerUndefinedFilterCallback($callable)
     {
         $this->twig->registerUndefinedFilterCallback($callable);
     }
 
-    public function getFilters()
+    #[\ReturnTypeWillChange] public function getFilters()
     {
         return $this->twig->getFilters();
     }
 
-    public function addTest($name, $test = null)
+    #[\ReturnTypeWillChange] public function addTest($name, $test = null)
     {
         $this->twig->addTest($name, $test);
     }
 
-    public function getTests()
+    #[\ReturnTypeWillChange] public function getTests()
     {
         return $this->twig->getTests();
     }
 
-    public function getTest($name)
+    #[\ReturnTypeWillChange] public function getTest($name)
     {
         return $this->twig->getTest($name);
     }
 
-    public function addFunction($name, $function = null)
+    #[\ReturnTypeWillChange] public function addFunction($name, $function = null)
     {
         $this->twig->addFunction($name, $function);
     }
 
-    public function getFunction($name)
+    #[\ReturnTypeWillChange] public function getFunction($name)
     {
         return $this->twig->getFunction($name);
     }
 
-    public function registerUndefinedFunctionCallback($callable)
+    #[\ReturnTypeWillChange] public function registerUndefinedFunctionCallback($callable)
     {
         $this->twig->registerUndefinedFunctionCallback($callable);
     }
 
-    public function getFunctions()
+    #[\ReturnTypeWillChange] public function getFunctions()
     {
         return $this->twig->getFunctions();
     }
 
-    public function addGlobal($name, $value)
+    #[\ReturnTypeWillChange] public function addGlobal($name, $value)
     {
         $this->twig->addGlobal($name, $value);
     }
 
-    public function getGlobals()
+    #[\ReturnTypeWillChange] public function getGlobals()
     {
         return $this->twig->getGlobals();
     }
 
-    public function mergeGlobals(array $context)
+    #[\ReturnTypeWillChange] public function mergeGlobals(array $context)
     {
         return $this->twig->mergeGlobals($context);
     }
 
-    public function getUnaryOperators()
+    #[\ReturnTypeWillChange] public function getUnaryOperators()
     {
         return $this->twig->getUnaryOperators();
     }
 
-    public function getBinaryOperators()
+    #[\ReturnTypeWillChange] public function getBinaryOperators()
     {
         return $this->twig->getBinaryOperators();
     }
 
-    public function computeAlternatives($name, $items)
+    #[\ReturnTypeWillChange] public function computeAlternatives($name, $items)
     {
         return $this->twig->computeAlternatives($name, $items);
     }

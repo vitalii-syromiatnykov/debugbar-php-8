@@ -26,7 +26,7 @@ class SlimCollector extends MessagesCollector
 
     protected $originalLogWriter;
 
-    public function __construct(Slim $slim)
+    #[\ReturnTypeWillChange] public function __construct(Slim $slim)
     {
         $this->slim = $slim;
         if ($log = $slim->getLog()) {
@@ -36,7 +36,7 @@ class SlimCollector extends MessagesCollector
         }
     }
 
-    public function write($message, $level)
+    #[\ReturnTypeWillChange] public function write($message, $level)
     {
         if ($this->originalLogWriter) {
             $this->originalLogWriter->write($message, $level);
@@ -59,7 +59,7 @@ class SlimCollector extends MessagesCollector
         return $map[$level];
     }
 
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'slim';
     }

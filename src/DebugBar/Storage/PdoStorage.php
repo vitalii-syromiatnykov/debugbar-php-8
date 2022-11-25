@@ -33,7 +33,7 @@ class PdoStorage implements StorageInterface
      * @param string $tableName
      * @param array $sqlQueries
      */
-    public function __construct(PDO $pdo, $tableName = 'phpdebugbar', array $sqlQueries = array())
+    #[\ReturnTypeWillChange] public function __construct(PDO $pdo, $tableName = 'phpdebugbar', array $sqlQueries = array())
     {
         $this->pdo = $pdo;
         $this->tableName = $tableName;
@@ -45,7 +45,7 @@ class PdoStorage implements StorageInterface
      *
      * @param array $queries
      */
-    public function setSqlQueries(array $queries)
+    #[\ReturnTypeWillChange] public function setSqlQueries(array $queries)
     {
         $this->sqlQueries = array_merge($this->sqlQueries, $queries);
     }
@@ -53,7 +53,7 @@ class PdoStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function save($id, $data)
+    #[\ReturnTypeWillChange] public function save($id, $data)
     {
         $sql = $this->getSqlQuery('save');
         $stmt = $this->pdo->prepare($sql);
@@ -64,7 +64,7 @@ class PdoStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function get($id)
+    #[\ReturnTypeWillChange] public function get($id)
     {
         $sql = $this->getSqlQuery('get');
         $stmt = $this->pdo->prepare($sql);
@@ -78,7 +78,7 @@ class PdoStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function find(array $filters = array(), $max = 20, $offset = 0)
+    #[\ReturnTypeWillChange] public function find(array $filters = array(), $max = 20, $offset = 0)
     {
         $where = array();
         $params = array();
@@ -113,7 +113,7 @@ class PdoStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function clear()
+    #[\ReturnTypeWillChange] public function clear()
     {
         $this->pdo->exec($this->getSqlQuery('clear'));
     }

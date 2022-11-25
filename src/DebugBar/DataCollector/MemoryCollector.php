@@ -25,7 +25,7 @@ class MemoryCollector extends DataCollector implements Renderable
      *
      * @return bool
      */
-    public function getRealUsage()
+    #[\ReturnTypeWillChange] public function getRealUsage()
     {
         return $this->realUsage;
     }
@@ -36,7 +36,7 @@ class MemoryCollector extends DataCollector implements Renderable
      *
      * @param bool $realUsage
      */
-    public function setRealUsage($realUsage)
+    #[\ReturnTypeWillChange] public function setRealUsage($realUsage)
     {
         $this->realUsage = $realUsage;
     }
@@ -46,7 +46,7 @@ class MemoryCollector extends DataCollector implements Renderable
      *
      * @return integer
      */
-    public function getPeakUsage()
+    #[\ReturnTypeWillChange] public function getPeakUsage()
     {
         return $this->peakUsage;
     }
@@ -54,7 +54,7 @@ class MemoryCollector extends DataCollector implements Renderable
     /**
      * Updates the peak memory usage value
      */
-    public function updatePeakUsage()
+    #[\ReturnTypeWillChange] public function updatePeakUsage()
     {
         $this->peakUsage = memory_get_peak_usage($this->realUsage);
     }
@@ -62,7 +62,7 @@ class MemoryCollector extends DataCollector implements Renderable
     /**
      * @return array
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         $this->updatePeakUsage();
         return array(
@@ -74,7 +74,7 @@ class MemoryCollector extends DataCollector implements Renderable
     /**
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'memory';
     }
@@ -82,7 +82,7 @@ class MemoryCollector extends DataCollector implements Renderable
     /**
      * @return array
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return array(
             "memory" => array(

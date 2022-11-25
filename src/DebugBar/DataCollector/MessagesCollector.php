@@ -36,7 +36,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
     /**
      * @param string $name
      */
-    public function __construct($name = 'messages')
+    #[\ReturnTypeWillChange] public function __construct($name = 'messages')
     {
         $this->name = $name;
     }
@@ -47,7 +47,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
      * @param DataFormatterInterface $formater
      * @return $this
      */
-    public function setDataFormatter(DataFormatterInterface $formater)
+    #[\ReturnTypeWillChange] public function setDataFormatter(DataFormatterInterface $formater)
     {
         $this->dataFormater = $formater;
         return $this;
@@ -56,7 +56,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
     /**
      * @return DataFormatterInterface
      */
-    public function getDataFormatter()
+    #[\ReturnTypeWillChange] public function getDataFormatter()
     {
         if ($this->dataFormater === null) {
             $this->dataFormater = DataCollector::getDefaultDataFormatter();
@@ -70,7 +70,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
      * @param DebugBarVarDumper $varDumper
      * @return $this
      */
-    public function setVarDumper(DebugBarVarDumper $varDumper)
+    #[\ReturnTypeWillChange] public function setVarDumper(DebugBarVarDumper $varDumper)
     {
         $this->varDumper = $varDumper;
         return $this;
@@ -81,7 +81,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
      *
      * @return DebugBarVarDumper
      */
-    public function getVarDumper()
+    #[\ReturnTypeWillChange] public function getVarDumper()
     {
         if ($this->varDumper === null) {
             $this->varDumper = DataCollector::getDefaultVarDumper();
@@ -97,7 +97,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
      * @param bool $value
      * @return $this
      */
-    public function useHtmlVarDumper($value = true)
+    #[\ReturnTypeWillChange] public function useHtmlVarDumper($value = true)
     {
         $this->useHtmlVarDumper = $value;
         return $this;
@@ -109,7 +109,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
      *
      * @return mixed
      */
-    public function isHtmlVarDumperUsed()
+    #[\ReturnTypeWillChange] public function isHtmlVarDumperUsed()
     {
         return $this->useHtmlVarDumper;
     }
@@ -122,7 +122,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
      * @param mixed $message
      * @param string $label
      */
-    public function addMessage($message, $label = 'info', $isString = true)
+    #[\ReturnTypeWillChange] public function addMessage($message, $label = 'info', $isString = true)
     {
         $messageText = $message;
         $messageHtml = null;
@@ -148,7 +148,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
      *
      * @param MessagesAggregateInterface $messages
      */
-    public function aggregate(MessagesAggregateInterface $messages)
+    #[\ReturnTypeWillChange] public function aggregate(MessagesAggregateInterface $messages)
     {
         $this->aggregates[] = $messages;
     }
@@ -156,7 +156,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
     /**
      * @return array
      */
-    public function getMessages()
+    #[\ReturnTypeWillChange] public function getMessages()
     {
         $messages = $this->messages;
         foreach ($this->aggregates as $collector) {
@@ -183,7 +183,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
      * @param $message
      * @param array $context
      */
-    public function log($level, $message, array $context = array()): void
+    #[\ReturnTypeWillChange] public function log($level, $message, array $context = array()): void
     {
         // For string messages, interpolate the context following PSR-3
         if (is_string($message)) {
@@ -217,7 +217,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
     /**
      * Deletes all messages
      */
-    public function clear()
+    #[\ReturnTypeWillChange] public function clear()
     {
         $this->messages = array();
     }
@@ -225,7 +225,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
     /**
      * @return array
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         $messages = $this->getMessages();
         return array(
@@ -237,7 +237,7 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
     /**
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return $this->name;
     }
@@ -245,14 +245,14 @@ class MessagesCollector extends AbstractLogger implements DataCollectorInterface
     /**
      * @return array
      */
-    public function getAssets() {
+    #[\ReturnTypeWillChange] public function getAssets() {
         return $this->isHtmlVarDumperUsed() ? $this->getVarDumper()->getAssets() : array();
     }
 
     /**
      * @return array
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         $name = $this->getName();
         return array(

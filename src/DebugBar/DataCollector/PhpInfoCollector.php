@@ -18,7 +18,7 @@ class PhpInfoCollector extends DataCollector implements Renderable
     /**
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'php';
     }
@@ -26,7 +26,7 @@ class PhpInfoCollector extends DataCollector implements Renderable
     /**
      * @return array
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         return array(
             'version' => implode('.', [PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION]),
@@ -37,7 +37,7 @@ class PhpInfoCollector extends DataCollector implements Renderable
     /**
      * {@inheritDoc}
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return array(
             "php_version" => array(

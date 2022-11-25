@@ -14,7 +14,7 @@ class Propel2CollectorTest extends DebugBarTestCase
     /* @var null|DataFormatter */
     protected $dataFormatter = null;
 
-    public function setUp(): void
+    #[\ReturnTypeWillChange] public function setUp(): void
     {
         $config = array(
             'slowTreshold' => 0.1,
@@ -64,7 +64,7 @@ class Propel2CollectorTest extends DebugBarTestCase
         $this->assertEquals($correctResult, $this->stub->collect());
     }
 
-    public function testSimpleMessage()
+    #[\ReturnTypeWillChange] public function testSimpleMessage()
     {
         $record = array(
             'message' => 'Simple message',
@@ -97,7 +97,7 @@ class Propel2CollectorTest extends DebugBarTestCase
         $this->equals($correctResult, array($record));
     }
 
-    public function testErrorMessage()
+    #[\ReturnTypeWillChange] public function testErrorMessage()
     {
         $record = array(
             'message' => 'Error message',
@@ -133,7 +133,7 @@ class Propel2CollectorTest extends DebugBarTestCase
         $this->equals($correctResult, array($record));
     }
 
-    public function testProfileMessage()
+    #[\ReturnTypeWillChange] public function testProfileMessage()
     {
         $record = array(
             'message' => '     Time: 0.100ms | Memory:  1MB | Memory Delta: +1.0kB | Memory Peak:  2MB | SELECT id, first_name, last_name FROM author WHERE id = 1',
@@ -167,7 +167,7 @@ class Propel2CollectorTest extends DebugBarTestCase
         $this->equals($correctResult, array($record));
     }
 
-    public function testSummaryProfileMessage()
+    #[\ReturnTypeWillChange] public function testSummaryProfileMessage()
     {
         $records = array(
             array(
@@ -224,7 +224,7 @@ class MockHandler
 {
 
     protected $records = array();
-    public function __construct($records)
+    #[\ReturnTypeWillChange] public function __construct($records)
     {
         $this->records = $records;
     }
@@ -232,7 +232,7 @@ class MockHandler
     /**
      * @return array
      */
-    public function getRecords()
+    #[\ReturnTypeWillChange] public function getRecords()
     {
         return $this->records;
     }

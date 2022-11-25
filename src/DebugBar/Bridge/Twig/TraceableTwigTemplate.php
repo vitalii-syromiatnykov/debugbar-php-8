@@ -15,7 +15,7 @@ use Twig_TemplateInterface;
 
 /**
  * Wraps a Twig_Template to add profiling features
- * 
+ *
  * @deprecated
  */
 class TraceableTwigTemplate extends Twig_Template implements Twig_TemplateInterface
@@ -26,78 +26,78 @@ class TraceableTwigTemplate extends Twig_Template implements Twig_TemplateInterf
      * @param TraceableTwigEnvironment $env
      * @param Twig_Template $template
      */
-    public function __construct(TraceableTwigEnvironment $env, Twig_Template $template)
+    #[\ReturnTypeWillChange] public function __construct(TraceableTwigEnvironment $env, Twig_Template $template)
     {
         $this->env = $env;
         $this->template = $template;
     }
 
-    public function __call($name, $arguments)
+    #[\ReturnTypeWillChange] public function __call($name, $arguments)
     {
         return call_user_func_array(array($this->template, $name), $arguments);
     }
 
-    public function doDisplay(array $context, array $blocks = array())
+    #[\ReturnTypeWillChange] public function doDisplay(array $context, array $blocks = array())
     {
         return $this->template->doDisplay($context, $blocks);
     }
 
-    public function getTemplateName()
+    #[\ReturnTypeWillChange] public function getTemplateName()
     {
         return $this->template->getTemplateName();
     }
 
-    public function getEnvironment()
+    #[\ReturnTypeWillChange] public function getEnvironment()
     {
         return $this->template->getEnvironment();
     }
 
-    public function getParent(array $context)
+    #[\ReturnTypeWillChange] public function getParent(array $context)
     {
         return $this->template->getParent($context);
     }
 
-    public function isTraitable()
+    #[\ReturnTypeWillChange] public function isTraitable()
     {
         return $this->template->isTraitable();
     }
 
-    public function displayParentBlock($name, array $context, array $blocks = array())
+    #[\ReturnTypeWillChange] public function displayParentBlock($name, array $context, array $blocks = array())
     {
         $this->template->displayParentBlock($name, $context, $blocks);
     }
 
-    public function displayBlock($name, array $context, array $blocks = array(), $useBlocks = true)
+    #[\ReturnTypeWillChange] public function displayBlock($name, array $context, array $blocks = array(), $useBlocks = true)
     {
         $this->template->displayBlock($name, $context, $blocks, $useBlocks);
     }
 
-    public function renderParentBlock($name, array $context, array $blocks = array())
+    #[\ReturnTypeWillChange] public function renderParentBlock($name, array $context, array $blocks = array())
     {
         return $this->template->renderParentBlock($name, $context, $blocks);
     }
 
-    public function renderBlock($name, array $context, array $blocks = array(), $useBlocks = true)
+    #[\ReturnTypeWillChange] public function renderBlock($name, array $context, array $blocks = array(), $useBlocks = true)
     {
         return $this->template->renderBlock($name, $context, $blocks, $useBlocks);
     }
 
-    public function hasBlock($name)
+    #[\ReturnTypeWillChange] public function hasBlock($name)
     {
         return $this->template->hasBlock($name);
     }
 
-    public function getBlockNames()
+    #[\ReturnTypeWillChange] public function getBlockNames()
     {
         return $this->template->getBlockNames();
     }
 
-    public function getBlocks()
+    #[\ReturnTypeWillChange] public function getBlocks()
     {
         return $this->template->getBlocks();
     }
 
-    public function display(array $context, array $blocks = array())
+    #[\ReturnTypeWillChange] public function display(array $context, array $blocks = array())
     {
         $start = microtime(true);
         $this->template->display($context, $blocks);
@@ -114,7 +114,7 @@ class TraceableTwigTemplate extends Twig_Template implements Twig_TemplateInterf
         ));
     }
 
-    public function render(array $context)
+    #[\ReturnTypeWillChange] public function render(array $context)
     {
         $level = ob_get_level();
         ob_start();

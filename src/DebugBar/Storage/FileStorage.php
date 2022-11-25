@@ -20,7 +20,7 @@ class FileStorage implements StorageInterface
     /**
      * @param string $dirname Directories where to store files
      */
-    public function __construct($dirname)
+    #[\ReturnTypeWillChange] public function __construct($dirname)
     {
         $this->dirname = rtrim($dirname, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     }
@@ -28,7 +28,7 @@ class FileStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function save($id, $data)
+    #[\ReturnTypeWillChange] public function save($id, $data)
     {
         if (!file_exists($this->dirname)) {
             mkdir($this->dirname, 0777, true);
@@ -39,7 +39,7 @@ class FileStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function get($id)
+    #[\ReturnTypeWillChange] public function get($id)
     {
         return json_decode(file_get_contents($this->makeFilename($id)), true);
     }
@@ -47,7 +47,7 @@ class FileStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function find(array $filters = array(), $max = 20, $offset = 0)
+    #[\ReturnTypeWillChange] public function find(array $filters = array(), $max = 20, $offset = 0)
     {
         //Loop through all .json files and remember the modified time and id.
         $files = array();
@@ -90,7 +90,7 @@ class FileStorage implements StorageInterface
 
     /**
      * Filter the metadata for matches.
-     * 
+     *
      * @param  array $meta
      * @param  array $filters
      * @return bool
@@ -108,7 +108,7 @@ class FileStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function clear()
+    #[\ReturnTypeWillChange] public function clear()
     {
         foreach (new \DirectoryIterator($this->dirname) as $file) {
             if (substr($file->getFilename(), 0, 1) !== '.') {
@@ -119,9 +119,9 @@ class FileStorage implements StorageInterface
 
     /**
      * @param  string $id
-     * @return string 
+     * @return string
      */
-    public function makeFilename($id)
+    #[\ReturnTypeWillChange] public function makeFilename($id)
     {
         return $this->dirname . basename($id). ".json";
     }

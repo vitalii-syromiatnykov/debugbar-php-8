@@ -56,7 +56,7 @@ class DebugBar implements ArrayAccess
      * @throws DebugBarException
      * @return $this
      */
-    public function addCollector(DataCollectorInterface $collector)
+    #[\ReturnTypeWillChange] public function addCollector(DataCollectorInterface $collector)
     {
         if ($collector->getName() === '__meta') {
             throw new DebugBarException("'__meta' is a reserved name and cannot be used as a collector name");
@@ -74,7 +74,7 @@ class DebugBar implements ArrayAccess
      * @param string $name
      * @return boolean
      */
-    public function hasCollector($name)
+    #[\ReturnTypeWillChange] public function hasCollector($name)
     {
         return isset($this->collectors[$name]);
     }
@@ -86,7 +86,7 @@ class DebugBar implements ArrayAccess
      * @return DataCollectorInterface
      * @throws DebugBarException
      */
-    public function getCollector($name)
+    #[\ReturnTypeWillChange] public function getCollector($name)
     {
         if (!isset($this->collectors[$name])) {
             throw new DebugBarException("'$name' is not a registered collector");
@@ -99,7 +99,7 @@ class DebugBar implements ArrayAccess
      *
      * @return array[DataCollectorInterface]
      */
-    public function getCollectors()
+    #[\ReturnTypeWillChange] public function getCollectors()
     {
         return $this->collectors;
     }
@@ -110,7 +110,7 @@ class DebugBar implements ArrayAccess
      * @param RequestIdGeneratorInterface $generator
      * @return $this
      */
-    public function setRequestIdGenerator(RequestIdGeneratorInterface $generator)
+    #[\ReturnTypeWillChange] public function setRequestIdGenerator(RequestIdGeneratorInterface $generator)
     {
         $this->requestIdGenerator = $generator;
         return $this;
@@ -119,7 +119,7 @@ class DebugBar implements ArrayAccess
     /**
      * @return RequestIdGeneratorInterface
      */
-    public function getRequestIdGenerator()
+    #[\ReturnTypeWillChange] public function getRequestIdGenerator()
     {
         if ($this->requestIdGenerator === null) {
             $this->requestIdGenerator = new RequestIdGenerator();
@@ -132,7 +132,7 @@ class DebugBar implements ArrayAccess
      *
      * @return string
      */
-    public function getCurrentRequestId()
+    #[\ReturnTypeWillChange] public function getCurrentRequestId()
     {
         if ($this->requestId === null) {
             $this->requestId = $this->getRequestIdGenerator()->generate();
@@ -146,7 +146,7 @@ class DebugBar implements ArrayAccess
      * @param StorageInterface $storage
      * @return $this
      */
-    public function setStorage(StorageInterface $storage = null)
+    #[\ReturnTypeWillChange] public function setStorage(StorageInterface $storage = null)
     {
         $this->storage = $storage;
         return $this;
@@ -155,7 +155,7 @@ class DebugBar implements ArrayAccess
     /**
      * @return StorageInterface
      */
-    public function getStorage()
+    #[\ReturnTypeWillChange] public function getStorage()
     {
         return $this->storage;
     }
@@ -165,7 +165,7 @@ class DebugBar implements ArrayAccess
      *
      * @return boolean
      */
-    public function isDataPersisted()
+    #[\ReturnTypeWillChange] public function isDataPersisted()
     {
         return $this->storage !== null;
     }
@@ -176,7 +176,7 @@ class DebugBar implements ArrayAccess
      * @param HttpDriverInterface $driver
      * @return $this
      */
-    public function setHttpDriver(HttpDriverInterface $driver)
+    #[\ReturnTypeWillChange] public function setHttpDriver(HttpDriverInterface $driver)
     {
         $this->httpDriver = $driver;
         return $this;
@@ -189,7 +189,7 @@ class DebugBar implements ArrayAccess
      *
      * @return HttpDriverInterface
      */
-    public function getHttpDriver()
+    #[\ReturnTypeWillChange] public function getHttpDriver()
     {
         if ($this->httpDriver === null) {
             $this->httpDriver = new PhpHttpDriver();
@@ -202,7 +202,7 @@ class DebugBar implements ArrayAccess
      *
      * @return array
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         if (php_sapi_name() === 'cli') {
             $ip = gethostname();
@@ -259,7 +259,7 @@ class DebugBar implements ArrayAccess
      *
      * @return array
      */
-    public function getData()
+    #[\ReturnTypeWillChange] public function getData()
     {
         if ($this->data === null) {
             $this->collect();
@@ -274,7 +274,7 @@ class DebugBar implements ArrayAccess
      * @param integer $maxHeaderLength
      * @return array
      */
-    public function getDataAsHeaders($headerName = 'phpdebugbar', $maxHeaderLength = 4096, $maxTotalHeaderLength = 250000)
+    #[\ReturnTypeWillChange] public function getDataAsHeaders($headerName = 'phpdebugbar', $maxHeaderLength = 4096, $maxTotalHeaderLength = 250000)
     {
         $data = rawurlencode(json_encode(array(
             'id' => $this->getCurrentRequestId(),
@@ -312,7 +312,7 @@ class DebugBar implements ArrayAccess
      * @param integer $maxHeaderLength
      * @return $this
      */
-    public function sendDataInHeaders($useOpenHandler = null, $headerName = 'phpdebugbar', $maxHeaderLength = 4096)
+    #[\ReturnTypeWillChange] public function sendDataInHeaders($useOpenHandler = null, $headerName = 'phpdebugbar', $maxHeaderLength = 4096)
     {
         if ($useOpenHandler === null) {
             $useOpenHandler = self::$useOpenHandlerWhenSendingDataHeaders;
@@ -331,7 +331,7 @@ class DebugBar implements ArrayAccess
     /**
      * Stacks the data in the session for later rendering
      */
-    public function stackData()
+    #[\ReturnTypeWillChange] public function stackData()
     {
         $http = $this->initStackSession();
 
@@ -353,7 +353,7 @@ class DebugBar implements ArrayAccess
      *
      * @return boolean
      */
-    public function hasStackedData()
+    #[\ReturnTypeWillChange] public function hasStackedData()
     {
         try {
             $http = $this->initStackSession();
@@ -369,7 +369,7 @@ class DebugBar implements ArrayAccess
      * @param boolean $delete Whether to delete the data in the session
      * @return array
      */
-    public function getStackedData($delete = true)
+    #[\ReturnTypeWillChange] public function getStackedData($delete = true)
     {
         $http = $this->initStackSession();
         $stackedData = $http->getSessionValue($this->stackSessionNamespace);
@@ -395,7 +395,7 @@ class DebugBar implements ArrayAccess
      * @param string $ns
      * @return $this
      */
-    public function setStackDataSessionNamespace($ns)
+    #[\ReturnTypeWillChange] public function setStackDataSessionNamespace($ns)
     {
         $this->stackSessionNamespace = $ns;
         return $this;
@@ -406,7 +406,7 @@ class DebugBar implements ArrayAccess
      *
      * @return string
      */
-    public function getStackDataSessionNamespace()
+    #[\ReturnTypeWillChange] public function getStackDataSessionNamespace()
     {
         return $this->stackSessionNamespace;
     }
@@ -418,7 +418,7 @@ class DebugBar implements ArrayAccess
      * @param boolean $enabled
      * @return $this
      */
-    public function setStackAlwaysUseSessionStorage($enabled = true)
+    #[\ReturnTypeWillChange] public function setStackAlwaysUseSessionStorage($enabled = true)
     {
         $this->stackAlwaysUseSessionStorage = $enabled;
         return $this;
@@ -430,7 +430,7 @@ class DebugBar implements ArrayAccess
      *
      * @return boolean
      */
-    public function isStackAlwaysUseSessionStorage()
+    #[\ReturnTypeWillChange] public function isStackAlwaysUseSessionStorage()
     {
         return $this->stackAlwaysUseSessionStorage;
     }
@@ -460,7 +460,7 @@ class DebugBar implements ArrayAccess
      * @param string $basePath
      * @return JavascriptRenderer
      */
-    public function getJavascriptRenderer($baseUrl = null, $basePath = null)
+    #[\ReturnTypeWillChange] public function getJavascriptRenderer($baseUrl = null, $basePath = null)
     {
         if ($this->jsRenderer === null) {
             $this->jsRenderer = new JavascriptRenderer($this, $baseUrl, $basePath);
@@ -471,26 +471,22 @@ class DebugBar implements ArrayAccess
     // --------------------------------------------
     // ArrayAccess implementation
 
-    #[\ReturnTypeWillChange]
-    public function offsetSet($key, $value)
+    #[\ReturnTypeWillChange] public function offsetSet($key, $value)
     {
         throw new DebugBarException("DebugBar[] is read-only");
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetGet($key)
+    #[\ReturnTypeWillChange] public function offsetGet($key)
     {
         return $this->getCollector($key);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetExists($key)
+    #[\ReturnTypeWillChange] public function offsetExists($key)
     {
         return $this->hasCollector($key);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($key)
+    #[\ReturnTypeWillChange] public function offsetUnset($key)
     {
         throw new DebugBarException("DebugBar[] is read-only");
     }

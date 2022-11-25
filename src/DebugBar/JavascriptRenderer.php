@@ -89,7 +89,7 @@ class JavascriptRenderer
      * @param string $baseUrl
      * @param string $basePath
      */
-    public function __construct(DebugBar $debugBar, $baseUrl = null, $basePath = null)
+    #[\ReturnTypeWillChange] public function __construct(DebugBar $debugBar, $baseUrl = null, $basePath = null)
     {
         $this->debugBar = $debugBar;
 
@@ -129,7 +129,7 @@ class JavascriptRenderer
      *
      * @param array $options [description]
      */
-    public function setOptions(array $options)
+    #[\ReturnTypeWillChange] public function setOptions(array $options)
     {
         if (array_key_exists('base_path', $options)) {
             $this->setBasePath($options['base_path']);
@@ -195,7 +195,7 @@ class JavascriptRenderer
      *
      * @param string $path
      */
-    public function setBasePath($path)
+    #[\ReturnTypeWillChange] public function setBasePath($path)
     {
         $this->basePath = $path;
         return $this;
@@ -206,7 +206,7 @@ class JavascriptRenderer
      *
      * @return string
      */
-    public function getBasePath()
+    #[\ReturnTypeWillChange] public function getBasePath()
     {
         return $this->basePath;
     }
@@ -216,7 +216,7 @@ class JavascriptRenderer
      *
      * @param string $url
      */
-    public function setBaseUrl($url)
+    #[\ReturnTypeWillChange] public function setBaseUrl($url)
     {
         $this->baseUrl = $url;
         return $this;
@@ -227,7 +227,7 @@ class JavascriptRenderer
      *
      * @return string
      */
-    public function getBaseUrl()
+    #[\ReturnTypeWillChange] public function getBaseUrl()
     {
         return $this->baseUrl;
     }
@@ -240,7 +240,7 @@ class JavascriptRenderer
      *
      * @param boolean $enabled
      */
-    public function setIncludeVendors($enabled = true)
+    #[\ReturnTypeWillChange] public function setIncludeVendors($enabled = true)
     {
         if (is_string($enabled)) {
             $enabled = array($enabled);
@@ -260,7 +260,7 @@ class JavascriptRenderer
      *
      * @return boolean
      */
-    public function areVendorsIncluded()
+    #[\ReturnTypeWillChange] public function areVendorsIncluded()
     {
         return $this->includeVendors !== false;
     }
@@ -272,7 +272,7 @@ class JavascriptRenderer
      *
      * @return void
      */
-    public function disableVendor($name)
+    #[\ReturnTypeWillChange] public function disableVendor($name)
     {
         if (array_key_exists($name, $this->cssVendors)) {
             unset($this->cssVendors[$name]);
@@ -287,7 +287,7 @@ class JavascriptRenderer
      *
      * @param string $className
      */
-    public function setJavascriptClass($className)
+    #[\ReturnTypeWillChange] public function setJavascriptClass($className)
     {
         $this->javascriptClass = $className;
         return $this;
@@ -298,7 +298,7 @@ class JavascriptRenderer
      *
      * @return string
      */
-    public function getJavascriptClass()
+    #[\ReturnTypeWillChange] public function getJavascriptClass()
     {
         return $this->javascriptClass;
     }
@@ -308,7 +308,7 @@ class JavascriptRenderer
      *
      * @param string $name
      */
-    public function setVariableName($name)
+    #[\ReturnTypeWillChange] public function setVariableName($name)
     {
         $this->variableName = $name;
         return $this;
@@ -319,7 +319,7 @@ class JavascriptRenderer
      *
      * @return string
      */
-    public function getVariableName()
+    #[\ReturnTypeWillChange] public function getVariableName()
     {
         return $this->variableName;
     }
@@ -333,7 +333,7 @@ class JavascriptRenderer
      *
      * @param integer $init
      */
-    public function setInitialization($init)
+    #[\ReturnTypeWillChange] public function setInitialization($init)
     {
         $this->initialization = $init;
         return $this;
@@ -344,7 +344,7 @@ class JavascriptRenderer
      *
      * @return integer
      */
-    public function getInitialization()
+    #[\ReturnTypeWillChange] public function getInitialization()
     {
         return $this->initialization;
     }
@@ -354,7 +354,7 @@ class JavascriptRenderer
      *
      * @param boolean $enabled
      */
-    public function setEnableJqueryNoConflict($enabled = true)
+    #[\ReturnTypeWillChange] public function setEnableJqueryNoConflict($enabled = true)
     {
         $this->enableJqueryNoConflict = $enabled;
         return $this;
@@ -365,7 +365,7 @@ class JavascriptRenderer
      *
      * @return boolean
      */
-    public function isJqueryNoConflictEnabled()
+    #[\ReturnTypeWillChange] public function isJqueryNoConflictEnabled()
     {
         return $this->enableJqueryNoConflict;
     }
@@ -376,7 +376,7 @@ class JavascriptRenderer
      * @param boolean $enabled
      * @return $this
      */
-    public function setUseRequireJs($enabled = true)
+    #[\ReturnTypeWillChange] public function setUseRequireJs($enabled = true)
     {
         $this->useRequireJs = $enabled;
         return $this;
@@ -387,7 +387,7 @@ class JavascriptRenderer
      *
      * @return boolean
      */
-    public function isRequireJsUsed()
+    #[\ReturnTypeWillChange] public function isRequireJsUsed()
     {
         return $this->useRequireJs;
     }
@@ -408,7 +408,7 @@ class JavascriptRenderer
      * @param string $name
      * @param array $options
      */
-    public function addControl($name, array $options)
+    #[\ReturnTypeWillChange] public function addControl($name, array $options)
     {
         if (count(array_intersect(array_keys($options), array('icon', 'widget', 'tab', 'indicator'))) === 0) {
             throw new DebugBarException("Not enough options for control '$name'");
@@ -422,7 +422,7 @@ class JavascriptRenderer
      *
      * @param string $name
      */
-    public function disableControl($name)
+    #[\ReturnTypeWillChange] public function disableControl($name)
     {
         $this->controls[$name] = null;
         return $this;
@@ -435,7 +435,7 @@ class JavascriptRenderer
      *
      * @return array
      */
-    public function getControls()
+    #[\ReturnTypeWillChange] public function getControls()
     {
         return $this->controls;
     }
@@ -445,7 +445,7 @@ class JavascriptRenderer
      *
      * @param string $name
      */
-    public function ignoreCollector($name)
+    #[\ReturnTypeWillChange] public function ignoreCollector($name)
     {
         $this->ignoredCollectors[] = $name;
         return $this;
@@ -456,7 +456,7 @@ class JavascriptRenderer
      *
      * @return array
      */
-    public function getIgnoredCollectors()
+    #[\ReturnTypeWillChange] public function getIgnoredCollectors()
     {
         return $this->ignoredCollectors;
     }
@@ -468,7 +468,7 @@ class JavascriptRenderer
      *
      * @param string $className
      */
-    public function setAjaxHandlerClass($className)
+    #[\ReturnTypeWillChange] public function setAjaxHandlerClass($className)
     {
         $this->ajaxHandlerClass = $className;
         return $this;
@@ -479,7 +479,7 @@ class JavascriptRenderer
      *
      * @return string
      */
-    public function getAjaxHandlerClass()
+    #[\ReturnTypeWillChange] public function getAjaxHandlerClass()
     {
         return $this->ajaxHandlerClass;
     }
@@ -489,7 +489,7 @@ class JavascriptRenderer
      *
      * @param boolean $bind
      */
-    public function setBindAjaxHandlerToFetch($bind = true)
+    #[\ReturnTypeWillChange] public function setBindAjaxHandlerToFetch($bind = true)
     {
         $this->ajaxHandlerBindToFetch = $bind;
         return $this;
@@ -500,7 +500,7 @@ class JavascriptRenderer
      *
      * @return boolean
      */
-    public function isAjaxHandlerBoundToFetch()
+    #[\ReturnTypeWillChange] public function isAjaxHandlerBoundToFetch()
     {
         return $this->ajaxHandlerBindToFetch;
     }
@@ -510,7 +510,7 @@ class JavascriptRenderer
      *
      * @param boolean $bind
      */
-    public function setBindAjaxHandlerToJquery($bind = true)
+    #[\ReturnTypeWillChange] public function setBindAjaxHandlerToJquery($bind = true)
     {
         $this->ajaxHandlerBindToJquery = $bind;
         return $this;
@@ -521,7 +521,7 @@ class JavascriptRenderer
      *
      * @return boolean
      */
-    public function isAjaxHandlerBoundToJquery()
+    #[\ReturnTypeWillChange] public function isAjaxHandlerBoundToJquery()
     {
         return $this->ajaxHandlerBindToJquery;
     }
@@ -531,7 +531,7 @@ class JavascriptRenderer
      *
      * @param boolean $bind
      */
-    public function setBindAjaxHandlerToXHR($bind = true)
+    #[\ReturnTypeWillChange] public function setBindAjaxHandlerToXHR($bind = true)
     {
         $this->ajaxHandlerBindToXHR = $bind;
         return $this;
@@ -542,7 +542,7 @@ class JavascriptRenderer
      *
      * @return boolean
      */
-    public function isAjaxHandlerBoundToXHR()
+    #[\ReturnTypeWillChange] public function isAjaxHandlerBoundToXHR()
     {
         return $this->ajaxHandlerBindToXHR;
     }
@@ -553,7 +553,7 @@ class JavascriptRenderer
      *
      * @param boolean $autoShow
      */
-    public function setAjaxHandlerAutoShow($autoShow = true)
+    #[\ReturnTypeWillChange] public function setAjaxHandlerAutoShow($autoShow = true)
     {
         $this->ajaxHandlerAutoShow = $autoShow;
         return $this;
@@ -564,7 +564,7 @@ class JavascriptRenderer
      *
      * @return boolean
      */
-    public function isAjaxHandlerAutoShow()
+    #[\ReturnTypeWillChange] public function isAjaxHandlerAutoShow()
     {
         return $this->ajaxHandlerAutoShow;
     }
@@ -574,7 +574,7 @@ class JavascriptRenderer
      *
      * @param string $className
      */
-    public function setOpenHandlerClass($className)
+    #[\ReturnTypeWillChange] public function setOpenHandlerClass($className)
     {
         $this->openHandlerClass = $className;
         return $this;
@@ -585,7 +585,7 @@ class JavascriptRenderer
      *
      * @return string
      */
-    public function getOpenHandlerClass()
+    #[\ReturnTypeWillChange] public function getOpenHandlerClass()
     {
         return $this->openHandlerClass;
     }
@@ -595,7 +595,7 @@ class JavascriptRenderer
      *
      * @param string $url
      */
-    public function setOpenHandlerUrl($url)
+    #[\ReturnTypeWillChange] public function setOpenHandlerUrl($url)
     {
         $this->openHandlerUrl = $url;
         return $this;
@@ -606,7 +606,7 @@ class JavascriptRenderer
      *
      * @return string
      */
-    public function getOpenHandlerUrl()
+    #[\ReturnTypeWillChange] public function getOpenHandlerUrl()
     {
         return $this->openHandlerUrl;
     }
@@ -617,7 +617,7 @@ class JavascriptRenderer
      * @param string|null $nonce
      * @return $this
      */
-    public function setCspNonce($nonce = null)
+    #[\ReturnTypeWillChange] public function setCspNonce($nonce = null)
     {
         $this->cspNonce = $nonce;
         return $this;
@@ -628,7 +628,7 @@ class JavascriptRenderer
      *
      * @return string|null
      */
-    public function getCspNonce()
+    #[\ReturnTypeWillChange] public function getCspNonce()
     {
         return $this->cspNonce;
     }
@@ -642,7 +642,7 @@ class JavascriptRenderer
      * @param string $baseUrl  Base url of those files
      * @return $this
      */
-    public function addAssets($cssFiles, $jsFiles, $basePath = null, $baseUrl = null)
+    #[\ReturnTypeWillChange] public function addAssets($cssFiles, $jsFiles, $basePath = null, $baseUrl = null)
     {
         $this->additionalAssets[] = array(
             'base_path' => $basePath,
@@ -670,7 +670,7 @@ class JavascriptRenderer
      *                          <style>/<script> tags); it must be embedded within the <head> element
      * @return $this
      */
-    public function addInlineAssets($inlineCss, $inlineJs, $inlineHead)
+    #[\ReturnTypeWillChange] public function addInlineAssets($inlineCss, $inlineJs, $inlineHead)
     {
         $this->additionalAssets[] = array(
             'inline_css' => (array) $inlineCss,
@@ -687,7 +687,7 @@ class JavascriptRenderer
      * @param string $relativeTo The type of path to which filenames must be relative (path, url or null)
      * @return array
      */
-    public function getAssets($type = null, $relativeTo = self::RELATIVE_PATH)
+    #[\ReturnTypeWillChange] public function getAssets($type = null, $relativeTo = self::RELATIVE_PATH)
     {
         $cssFiles = $this->cssFiles;
         $jsFiles = $this->jsFiles;
@@ -821,7 +821,7 @@ class JavascriptRenderer
      * @param string $type Optionally return only 'css', 'js', or 'inline_head' collection
      * @return array|\Assetic\Asset\AssetCollection
      */
-    public function getAsseticCollection($type = null)
+    #[\ReturnTypeWillChange] public function getAsseticCollection($type = null)
     {
         $types = array('css', 'js', 'inline_head');
         $typeIndex = array_search(strtolower($type), $types);
@@ -865,7 +865,7 @@ class JavascriptRenderer
      *
      * @param string $targetFilename
      */
-    public function dumpCssAssets($targetFilename = null)
+    #[\ReturnTypeWillChange] public function dumpCssAssets($targetFilename = null)
     {
         $this->dumpAssets($this->getAssets('css'), $this->getAssets('inline_css'), $targetFilename);
     }
@@ -875,7 +875,7 @@ class JavascriptRenderer
      *
      * @param string $targetFilename
      */
-    public function dumpJsAssets($targetFilename = null)
+    #[\ReturnTypeWillChange] public function dumpJsAssets($targetFilename = null)
     {
         $this->dumpAssets($this->getAssets('js'), $this->getAssets('inline_js'), $targetFilename, $this->useRequireJs);
     }
@@ -886,7 +886,7 @@ class JavascriptRenderer
      *
      * @param string $targetFilename
      */
-    public function dumpHeadAssets($targetFilename = null)
+    #[\ReturnTypeWillChange] public function dumpHeadAssets($targetFilename = null)
     {
         $this->dumpAssets(null, $this->getAssets('inline_head'), $targetFilename);
     }
@@ -929,7 +929,7 @@ class JavascriptRenderer
      *
      * @return string
      */
-    public function renderHead()
+    #[\ReturnTypeWillChange] public function renderHead()
     {
         list($cssFiles, $jsFiles, $inlineCss, $inlineJs, $inlineHead) = $this->getAssets(null, self::RELATIVE_URL);
         $html = '';
@@ -972,7 +972,7 @@ class JavascriptRenderer
      * @param bool $head
      * @return string Return "{--DEBUGBAR_OB_START_REPLACE_ME--}" or return an empty string if $here == false
      */
-    public function renderOnShutdown($here = true, $initialize = true, $renderStackedData = true, $head = false)
+    #[\ReturnTypeWillChange] public function renderOnShutdown($here = true, $initialize = true, $renderStackedData = true, $head = false)
     {
         register_shutdown_function(array($this, "replaceTagInBuffer"), $here, $initialize, $renderStackedData, $head);
 
@@ -991,7 +991,7 @@ class JavascriptRenderer
      * @param boolean $renderStackedData
      * @return string
      */
-    public function renderOnShutdownWithHead($here = true, $initialize = true, $renderStackedData = true)
+    #[\ReturnTypeWillChange] public function renderOnShutdownWithHead($here = true, $initialize = true, $renderStackedData = true)
     {
         return $this->renderOnShutdown($here, $initialize, $renderStackedData, true);
     }
@@ -1004,7 +1004,7 @@ class JavascriptRenderer
      * @param bool $renderStackedData
      * @param bool $head
      */
-    public function replaceTagInBuffer($here = true, $initialize = true, $renderStackedData = true, $head = false)
+    #[\ReturnTypeWillChange] public function replaceTagInBuffer($here = true, $initialize = true, $renderStackedData = true, $head = false)
     {
         $render = ($head ? $this->renderHead() : "")
                 . $this->render($initialize, $renderStackedData);
@@ -1027,7 +1027,7 @@ class JavascriptRenderer
      * @param boolean $renderStackedData Whether or not to render the stacked data
      * @return string
      */
-    public function render($initialize = true, $renderStackedData = true)
+    #[\ReturnTypeWillChange] public function render($initialize = true, $renderStackedData = true)
     {
         $js = '';
 

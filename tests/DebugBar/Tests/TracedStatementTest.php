@@ -19,11 +19,11 @@ class TracedStatementTest extends DebugBarTestCase
      *                            ep.id_exame_situacao = <1>_situacao
      * @return void
      */
-    public function testReplacementParamsQuery()
+    #[\ReturnTypeWillChange] public function testReplacementParamsQuery()
     {
         $sql = 'select *
                 from geral.exame_part ep
-                where ep.id_exame = :id_exame and 
+                where ep.id_exame = :id_exame and
                       ep.id_exame_situacao = :id_exame_situacao';
         $params = array(
             ':id_exame'          => 1,
@@ -32,13 +32,13 @@ class TracedStatementTest extends DebugBarTestCase
         $traced = new TracedStatement($sql, $params);
         $expected = 'select *
                 from geral.exame_part ep
-                where ep.id_exame = <1> and 
+                where ep.id_exame = <1> and
                       ep.id_exame_situacao = <2>';
         $result = $traced->getSqlWithParams();
         $this->assertEquals($expected, $result);
     }
 
-    public function testReplacementParamsContainingBackReferenceSyntaxGeneratesCorrectString()
+    #[\ReturnTypeWillChange] public function testReplacementParamsContainingBackReferenceSyntaxGeneratesCorrectString()
     {
         $hashedPassword = '$2y$10$S3Y/kSsx8Z5BPtdd9.k3LOkbQ0egtsUHBT9EGQ.spxsmaEWbrxBW2';
         $sql = "UPDATE user SET password = :password";
@@ -56,7 +56,7 @@ class TracedStatementTest extends DebugBarTestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function testReplacementParamsContainingPotentialAdditionalQuestionMarkPlaceholderGeneratesCorrectString()
+    #[\ReturnTypeWillChange] public function testReplacementParamsContainingPotentialAdditionalQuestionMarkPlaceholderGeneratesCorrectString()
     {
         $hasQuestionMark = "Asking a question?";
         $string = "Asking for a friend";
@@ -86,7 +86,7 @@ class TracedStatementTest extends DebugBarTestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function testReplacementParamsContainingPotentialAdditionalNamedPlaceholderGeneratesCorrectString()
+    #[\ReturnTypeWillChange] public function testReplacementParamsContainingPotentialAdditionalNamedPlaceholderGeneratesCorrectString()
     {
         $hasQuestionMark = "Asking a question with a :string inside";
         $string = "Asking for a friend";
@@ -129,13 +129,13 @@ class TracedStatementTest extends DebugBarTestCase
      *                           p.status <> :status;
      * @return void
      */
-    public function testRepeadParamsQuery()
+    #[\ReturnTypeWillChange] public function testRepeadParamsQuery()
     {
         $sql = 'select *
                 from geral.person p
                 left join geral.contract c
                   on c.id_person = p.id_person
-                where c.status = :status and 
+                where c.status = :status and
                       p.status <> :status';
         $params = array(
             ':status' => 1
@@ -145,7 +145,7 @@ class TracedStatementTest extends DebugBarTestCase
                 from geral.person p
                 left join geral.contract c
                   on c.id_person = p.id_person
-                where c.status = <1> and 
+                where c.status = <1> and
                       p.status <> <1>';
         $result = $traced->getSqlWithParams();
         $this->assertEquals($expected, $result);
@@ -158,7 +158,7 @@ class TracedStatementTest extends DebugBarTestCase
      *                           <2018-01-01> and <2018-01-01>
      * @return void
      */
-    public function testParametersAreNotRepeated()
+    #[\ReturnTypeWillChange] public function testParametersAreNotRepeated()
     {
         $query = 'select * from `my_table` where `my_field` between ? and ?';
         $bindings = [

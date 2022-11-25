@@ -39,8 +39,7 @@ class TraceablePDOStatement extends PDOStatement
      * @param  mixed $driverdata [optional] Optional parameter(s) for the driver.
      * @return bool  TRUE on success or FALSE on failure.
      */
-    #[\ReturnTypeWillChange]
-    public function bindColumn($column, &$param, $type = null, $maxlen = null, $driverdata = null)
+    #[\ReturnTypeWillChange] public function bindColumn($column, &$param, $type = null, $maxlen = null, $driverdata = null)
     {
         $this->boundParameters[$column] = $param;
         $args = array_merge([$column, &$param], array_slice(func_get_args(), 2));
@@ -62,7 +61,7 @@ class TraceablePDOStatement extends PDOStatement
      * @param  mixed $driver_options [optional]
      * @return bool TRUE on success or FALSE on failure.
      */
-    public function bindParam($parameter, &$variable, $data_type = PDO::PARAM_STR, $length = null, $driver_options = null) : bool
+    #[\ReturnTypeWillChange] public function bindParam($parameter, &$variable, $data_type = PDO::PARAM_STR, $length = null, $driver_options = null)
     {
         $this->boundParameters[$parameter] = $variable;
         $args = array_merge([$parameter, &$variable], array_slice(func_get_args(), 2));
@@ -81,7 +80,7 @@ class TraceablePDOStatement extends PDOStatement
      * constants.
      * @return bool TRUE on success or FALSE on failure.
      */
-    public function bindValue($parameter, $value, $data_type = PDO::PARAM_STR) : bool
+    #[\ReturnTypeWillChange] public function bindValue($parameter, $value, $data_type = PDO::PARAM_STR)
     {
         $this->boundParameters[$parameter] = $value;
         return call_user_func_array(['parent', 'bindValue'], func_get_args());
@@ -97,7 +96,7 @@ class TraceablePDOStatement extends PDOStatement
      * @throws PDOException
      * @return bool TRUE on success or FALSE on failure.
      */
-    public function execute($input_parameters = null) : bool
+    #[\ReturnTypeWillChange] public function execute($input_parameters = null)
     {
         $preparedId = spl_object_hash($this);
         $boundParameters = $this->boundParameters;

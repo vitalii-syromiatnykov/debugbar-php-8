@@ -30,7 +30,7 @@ class ConfigCollector extends DataCollector implements Renderable, AssetProvider
      * @param bool $value
      * @return $this
      */
-    public function useHtmlVarDumper($value = true)
+    #[\ReturnTypeWillChange] public function useHtmlVarDumper($value = true)
     {
         $this->useHtmlVarDumper = $value;
         return $this;
@@ -42,7 +42,7 @@ class ConfigCollector extends DataCollector implements Renderable, AssetProvider
      *
      * @return mixed
      */
-    public function isHtmlVarDumperUsed()
+    #[\ReturnTypeWillChange] public function isHtmlVarDumperUsed()
     {
         return $this->useHtmlVarDumper;
     }
@@ -51,7 +51,7 @@ class ConfigCollector extends DataCollector implements Renderable, AssetProvider
      * @param array  $data
      * @param string $name
      */
-    public function __construct(array $data = array(), $name = 'config')
+    #[\ReturnTypeWillChange] public function __construct(array $data = array(), $name = 'config')
     {
         $this->name = $name;
         $this->data = $data;
@@ -62,7 +62,7 @@ class ConfigCollector extends DataCollector implements Renderable, AssetProvider
      *
      * @param array $data
      */
-    public function setData(array $data)
+    #[\ReturnTypeWillChange] public function setData(array $data)
     {
         $this->data = $data;
     }
@@ -70,7 +70,7 @@ class ConfigCollector extends DataCollector implements Renderable, AssetProvider
     /**
      * @return array
      */
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         $data = array();
         foreach ($this->data as $k => $v) {
@@ -87,7 +87,7 @@ class ConfigCollector extends DataCollector implements Renderable, AssetProvider
     /**
      * @return string
      */
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return $this->name;
     }
@@ -95,14 +95,14 @@ class ConfigCollector extends DataCollector implements Renderable, AssetProvider
     /**
      * @return array
      */
-    public function getAssets() {
+    #[\ReturnTypeWillChange] public function getAssets() {
         return $this->isHtmlVarDumperUsed() ? $this->getVarDumper()->getAssets() : array();
     }
 
     /**
      * @return array
      */
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         $name = $this->getName();
         $widget = $this->isHtmlVarDumperUsed()

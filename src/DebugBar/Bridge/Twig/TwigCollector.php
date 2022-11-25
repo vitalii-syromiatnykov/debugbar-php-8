@@ -26,17 +26,17 @@ use DebugBar\DataCollector\Renderable;
  * $env = new TraceableTwigEnvironment(new Twig_Environment($loader));
  * $debugbar->addCollector(new TwigCollector($env));
  * </code>
- * 
+ *
  * @deprecated use DebugBar\Bridge\TwigProfileCollector instead
  */
 class TwigCollector extends DataCollector implements Renderable, AssetProvider
 {
-    public function __construct(TraceableTwigEnvironment $twig)
+    #[\ReturnTypeWillChange] public function __construct(TraceableTwigEnvironment $twig)
     {
         $this->twig = $twig;
     }
 
-    public function collect()
+    #[\ReturnTypeWillChange] public function collect()
     {
         $templates = array();
         $accuRenderTime = 0;
@@ -58,12 +58,12 @@ class TwigCollector extends DataCollector implements Renderable, AssetProvider
         );
     }
 
-    public function getName()
+    #[\ReturnTypeWillChange] public function getName()
     {
         return 'twig';
     }
 
-    public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets()
     {
         return array(
             'twig' => array(
@@ -79,7 +79,7 @@ class TwigCollector extends DataCollector implements Renderable, AssetProvider
         );
     }
 
-    public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets()
     {
         return array(
             'css' => 'widgets/templates/widget.css',
