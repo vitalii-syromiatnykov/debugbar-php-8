@@ -22,35 +22,26 @@ use Twig_Profiler_Profile;
  */
 class TimeableTwigExtensionProfiler extends \Twig_Extension_Profiler
 {
-    /**
-     * @var \DebugBar\DataCollector\TimeDataCollector
-     */
-    private $timeDataCollector;
-
-    /**
-     * @param \DebugBar\DataCollector\TimeDataCollector $timeDataCollector
-     */
-    #[\ReturnTypeWillChange] public function setTimeDataCollector(TimeDataCollector $timeDataCollector)
+    #[\ReturnTypeWillChange] public function setTimeDataCollector(TimeDataCollector $timeDataCollector): void
     {
         $this->timeDataCollector = $timeDataCollector;
     }
 
-    #[\ReturnTypeWillChange] public function __construct(\Twig_Profiler_Profile $profile, TimeDataCollector $timeDataCollector = null)
+    #[\ReturnTypeWillChange] public function __construct(\Twig_Profiler_Profile $profile, private ?TimeDataCollector $timeDataCollector = null)
     {
         parent::__construct($profile);
-
-        $this->timeDataCollector = $timeDataCollector;
     }
 
-    #[\ReturnTypeWillChange] public function enter(Twig_Profiler_Profile $profile)
+    #[\ReturnTypeWillChange] public function enter(Twig_Profiler_Profile $profile): void
     {
         if ($this->timeDataCollector && $profile->isTemplate()) {
             $this->timeDataCollector->startMeasure($profile->getName(), 'template ' . $profile->getName());
         }
+
         parent::enter($profile);
     }
 
-    #[\ReturnTypeWillChange] public function leave(Twig_Profiler_Profile $profile)
+    #[\ReturnTypeWillChange] public function leave(Twig_Profiler_Profile $profile): void
     {
         parent::leave($profile);
         if ($this->timeDataCollector && $profile->isTemplate()) {

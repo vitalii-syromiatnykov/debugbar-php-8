@@ -7,13 +7,13 @@ use DebugBar\DataFormatter\DataFormatter;
 
 class DataFormatterTest extends DebugBarTestCase
 {
-    #[\ReturnTypeWillChange] public function testFormatVar()
+    #[\ReturnTypeWillChange] public function testFormatVar(): void
     {
         $f = new DataFormatter();
         $this->assertEquals("true", $f->formatVar(true));
     }
 
-    #[\ReturnTypeWillChange] public function testFormatDuration()
+    #[\ReturnTypeWillChange] public function testFormatDuration(): void
     {
         $f = new DataFormatter();
         $this->assertEquals("100μs", $f->formatDuration(0.0001));
@@ -22,7 +22,7 @@ class DataFormatterTest extends DebugBarTestCase
         $this->assertEquals("1.35s", $f->formatDuration(1.345));
     }
 
-    #[\ReturnTypeWillChange] public function testFormatBytes()
+    #[\ReturnTypeWillChange] public function testFormatBytes(): void
     {
         $f = new DataFormatter();
         $this->assertEquals("0B", $f->formatBytes(0));

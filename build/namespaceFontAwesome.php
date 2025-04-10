@@ -3,7 +3,7 @@
 $path = __DIR__ . '/../src/DebugBar/Resources/vendor/font-awesome/css/font-awesome.min.css';
 $contents = file_get_contents($path);
 
-if (strpos($contents, 'PhpDebugbarFontAwesome') !== false ){
+if (str_contains($contents, 'PhpDebugbarFontAwesome') ){
     exit('Already namespaced');
 }
 

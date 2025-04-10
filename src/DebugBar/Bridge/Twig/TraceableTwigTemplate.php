@@ -20,24 +20,17 @@ use Twig_TemplateInterface;
  */
 class TraceableTwigTemplate extends Twig_Template implements Twig_TemplateInterface
 {
-    protected $template;
-
-    /**
-     * @param TraceableTwigEnvironment $env
-     * @param Twig_Template $template
-     */
-    #[\ReturnTypeWillChange] public function __construct(TraceableTwigEnvironment $env, Twig_Template $template)
+    #[\ReturnTypeWillChange] public function __construct(TraceableTwigEnvironment $env, protected \Twig_Template $template)
     {
         $this->env = $env;
-        $this->template = $template;
     }
 
     #[\ReturnTypeWillChange] public function __call($name, $arguments)
     {
-        return call_user_func_array(array($this->template, $name), $arguments);
+        return call_user_func_array([$this->template, $name], $arguments);
     }
 
-    #[\ReturnTypeWillChange] public function doDisplay(array $context, array $blocks = array())
+    #[\ReturnTypeWillChange] public function doDisplay(array $context, array $blocks = [])
     {
         return $this->template->doDisplay($context, $blocks);
     }
@@ -62,22 +55,22 @@ class TraceableTwigTemplate extends Twig_Template implements Twig_TemplateInterf
         return $this->template->isTraitable();
     }
 
-    #[\ReturnTypeWillChange] public function displayParentBlock($name, array $context, array $blocks = array())
+    #[\ReturnTypeWillChange] public function displayParentBlock($name, array $context, array $blocks = []): void
     {
         $this->template->displayParentBlock($name, $context, $blocks);
     }
 
-    #[\ReturnTypeWillChange] public function displayBlock($name, array $context, array $blocks = array(), $useBlocks = true)
+    #[\ReturnTypeWillChange] public function displayBlock($name, array $context, array $blocks = [], $useBlocks = true): void
     {
         $this->template->displayBlock($name, $context, $blocks, $useBlocks);
     }
 
-    #[\ReturnTypeWillChange] public function renderParentBlock($name, array $context, array $blocks = array())
+    #[\ReturnTypeWillChange] public function renderParentBlock($name, array $context, array $blocks = [])
     {
         return $this->template->renderParentBlock($name, $context, $blocks);
     }
 
-    #[\ReturnTypeWillChange] public function renderBlock($name, array $context, array $blocks = array(), $useBlocks = true)
+    #[\ReturnTypeWillChange] public function renderBlock($name, array $context, array $blocks = [], $useBlocks = true)
     {
         return $this->template->renderBlock($name, $context, $blocks, $useBlocks);
     }
@@ -97,7 +90,7 @@ class TraceableTwigTemplate extends Twig_Template implements Twig_TemplateInterf
         return $this->template->getBlocks();
     }
 
-    #[\ReturnTypeWillChange] public function display(array $context, array $blocks = array())
+    #[\ReturnTypeWillChange] public function display(array $context, array $blocks = []): void
     {
         $start = microtime(true);
         $this->template->display($context, $blocks);
@@ -108,10 +101,10 @@ class TraceableTwigTemplate extends Twig_Template implements Twig_TemplateInterf
             $timeDataCollector->addMeasure($name, $start, $end);
         }
 
-        $this->env->addRenderedTemplate(array(
+        $this->env->addRenderedTemplate([
             'name' => $this->template->getTemplateName(),
             'render_time' => $end - $start
-        ));
+        ]);
     }
 
     #[\ReturnTypeWillChange] public function render(array $context)
@@ -120,18 +113,18 @@ class TraceableTwigTemplate extends Twig_Template implements Twig_TemplateInterf
         ob_start();
         try {
             $this->display($context);
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             while (ob_get_level() > $level) {
                 ob_end_clean();
             }
 
-            throw $e;
+            throw $exception;
         }
 
         return ob_get_clean();
     }
 
-    public static function clearCache()
+    public static function clearCache(): void
     {
         Twig_Template::clearCache();
     }

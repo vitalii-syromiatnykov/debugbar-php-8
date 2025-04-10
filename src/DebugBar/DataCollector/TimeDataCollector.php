@@ -18,10 +18,7 @@ use DebugBar\DebugBarException;
  */
 class TimeDataCollector extends DataCollector implements Renderable
 {
-    /**
-     * @var float
-     */
-    protected $requestStartTime;
+    protected float $requestStartTime;
 
     /**
      * @var float
@@ -31,12 +28,12 @@ class TimeDataCollector extends DataCollector implements Renderable
     /**
      * @var array
      */
-    protected $startedMeasures = array();
+    protected $startedMeasures = [];
 
     /**
      * @var array
      */
-    protected $measures = array();
+    protected $measures = [];
 
     /**
      * @param float $requestStartTime
@@ -44,12 +41,9 @@ class TimeDataCollector extends DataCollector implements Renderable
     #[\ReturnTypeWillChange] public function __construct($requestStartTime = null)
     {
         if ($requestStartTime === null) {
-            if (isset($_SERVER['REQUEST_TIME_FLOAT'])) {
-                $requestStartTime = $_SERVER['REQUEST_TIME_FLOAT'];
-            } else {
-                $requestStartTime = microtime(true);
-            }
+            $requestStartTime = $_SERVER['REQUEST_TIME_FLOAT'] ?? microtime(true);
         }
+
         $this->requestStartTime = (float)$requestStartTime;
     }
 
@@ -60,23 +54,22 @@ class TimeDataCollector extends DataCollector implements Renderable
      * @param string|null $label Public name
      * @param string|null $collector The source of the collector
      */
-    #[\ReturnTypeWillChange] public function startMeasure($name, $label = null, $collector = null)
+    #[\ReturnTypeWillChange] public function startMeasure($name, $label = null, $collector = null): void
     {
         $start = microtime(true);
-        $this->startedMeasures[$name] = array(
+        $this->startedMeasures[$name] = [
             'label' => $label ?: $name,
             'start' => $start,
             'collector' => $collector
-        );
+        ];
     }
 
     /**
      * Check a measure exists
      *
      * @param string $name
-     * @return bool
      */
-    #[\ReturnTypeWillChange] public function hasStartedMeasure($name)
+    #[\ReturnTypeWillChange] public function hasStartedMeasure($name): bool
     {
         return isset($this->startedMeasures[$name]);
     }
@@ -88,12 +81,13 @@ class TimeDataCollector extends DataCollector implements Renderable
      * @param array $params
      * @throws DebugBarException
      */
-    #[\ReturnTypeWillChange] public function stopMeasure($name, $params = array())
+    #[\ReturnTypeWillChange] public function stopMeasure($name, $params = []): void
     {
         $end = microtime(true);
         if (!$this->hasStartedMeasure($name)) {
-            throw new DebugBarException("Failed stopping measure '$name' because it hasn't been started");
+            throw new DebugBarException(sprintf("Failed stopping measure '%s' because it hasn't been started", $name));
         }
+
         $this->addMeasure(
             $this->startedMeasures[$name]['label'],
             $this->startedMeasures[$name]['start'],
@@ -113,9 +107,9 @@ class TimeDataCollector extends DataCollector implements Renderable
      * @param array $params
      * @param string|null $collector
      */
-    #[\ReturnTypeWillChange] public function addMeasure($label, $start, $end, $params = array(), $collector = null)
+    #[\ReturnTypeWillChange] public function addMeasure($label, $start, $end, $params = [], $collector = null): void
     {
-        $this->measures[] = array(
+        $this->measures[] = [
             'label' => $label,
             'start' => $start,
             'relative_start' => $start - $this->requestStartTime,
@@ -125,14 +119,13 @@ class TimeDataCollector extends DataCollector implements Renderable
             'duration_str' => $this->getDataFormatter()->formatDuration($end - $start),
             'params' => $params,
             'collector' => $collector
-        );
+        ];
     }
 
     /**
      * Utility function to measure the execution of a Closure
      *
      * @param string $label
-     * @param \Closure $closure
      * @param string|null $collector
      * @return mixed
      */
@@ -141,7 +134,7 @@ class TimeDataCollector extends DataCollector implements Renderable
         $name = spl_object_hash($closure);
         $this->startMeasure($name, $label, $collector);
         $result = $closure();
-        $params = is_array($result) ? $result : array();
+        $params = is_array($result) ? $result : [];
         $this->stopMeasure($name, $params);
         return $result;
     }
@@ -186,62 +179,51 @@ class TimeDataCollector extends DataCollector implements Renderable
         if ($this->requestEndTime !== null) {
             return $this->requestEndTime - $this->requestStartTime;
         }
+
         return microtime(true) - $this->requestStartTime;
     }
 
     /**
-     * @return array
      * @throws DebugBarException
      */
-    #[\ReturnTypeWillChange] public function collect()
+    #[\ReturnTypeWillChange] public function collect(): array
     {
         $this->requestEndTime = microtime(true);
         foreach (array_keys($this->startedMeasures) as $name) {
             $this->stopMeasure($name);
         }
 
-        usort($this->measures, function($a, $b) {
-            if ($a['start'] == $b['start']) {
-                return 0;
-            }
-            return $a['start'] < $b['start'] ? -1 : 1;
-        });
+        usort($this->measures, fn($a, $b): int => $a['start'] <=> $b['start']);
 
-        return array(
+        return [
             'start' => $this->requestStartTime,
             'end' => $this->requestEndTime,
             'duration' => $this->getRequestDuration(),
             'duration_str' => $this->getDataFormatter()->formatDuration($this->getRequestDuration()),
             'measures' => array_values($this->measures)
-        );
+        ];
     }
 
-    /**
-     * @return string
-     */
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange] public function getName(): string
     {
         return 'time';
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets(): array
     {
-        return array(
-            "time" => array(
+        return [
+            "time" => [
                 "icon" => "clock-o",
                 "tooltip" => "Request Duration",
                 "map" => "time.duration_str",
                 "default" => "'0ms'"
-            ),
-            "timeline" => array(
+            ],
+            "timeline" => [
                 "icon" => "tasks",
                 "widget" => "PhpDebugBar.Widgets.TimelineWidget",
                 "map" => "time",
                 "default" => "{}"
-            )
-        );
+            ]
+        ];
     }
 }

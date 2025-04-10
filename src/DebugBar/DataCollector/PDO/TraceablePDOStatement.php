@@ -11,20 +11,14 @@ use PDOStatement;
  */
 class TraceablePDOStatement extends PDOStatement
 {
-    /** @var PDO */
-    protected $pdo;
-
     /** @var array */
     protected $boundParameters = [];
 
     /**
      * TraceablePDOStatement constructor.
-     *
-     * @param TraceablePDO $pdo
      */
-    protected function __construct(TraceablePDO $pdo)
+    protected function __construct(protected TraceablePDO $pdo)
     {
-        $this->pdo = $pdo;
     }
 
     /**
@@ -110,8 +104,8 @@ class TraceablePDOStatement extends PDOStatement
         $ex = null;
         try {
             $result = parent::execute($input_parameters);
-        } catch (PDOException $e) {
-            $ex = $e;
+        } catch (PDOException $pdoException) {
+            $ex = $pdoException;
         }
 
         if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) !== PDO::ERRMODE_EXCEPTION && $result === false) {
@@ -122,9 +116,10 @@ class TraceablePDOStatement extends PDOStatement
         $trace->end($ex, $this->rowCount());
         $this->pdo->addExecutedStatement($trace);
 
-        if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_EXCEPTION && $ex !== null) {
+        if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_EXCEPTION && $ex instanceof \PDOException) {
             throw $ex;
         }
+
         return $result;
     }
 }

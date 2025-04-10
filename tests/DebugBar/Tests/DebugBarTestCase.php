@@ -3,44 +3,44 @@
 namespace DebugBar\Tests;
 
 use DebugBar\DebugBar;
-use DebugBar\RandomRequestIdGenerator;
 use PHPUnit\Framework\TestCase;
 
 abstract class DebugBarTestCase extends TestCase
 {
-    #[\ReturnTypeWillChange] public function setUp(): void
+    public $debugbar;
+    #[\ReturnTypeWillChange]protected function setUp(): void
     {
         $this->debugbar = new DebugBar();
         $this->debugbar->setHttpDriver($http = new MockHttpDriver());
     }
 
-    #[\ReturnTypeWillChange] public function assertJsonIsArray($json)
+    #[\ReturnTypeWillChange] public function assertJsonIsArray($json): void
     {
-        $data = json_decode($json);
+        $data = json_decode((string) $json);
         $this->assertTrue(is_array($data));
     }
 
-    #[\ReturnTypeWillChange] public function assertJsonIsObject($json)
+    #[\ReturnTypeWillChange] public function assertJsonIsObject($json): void
     {
-        $data = json_decode($json);
+        $data = json_decode((string) $json);
         $this->assertTrue(is_object($data));
     }
 
-    #[\ReturnTypeWillChange] public function assertJsonArrayNotEmpty($json)
+    #[\ReturnTypeWillChange] public function assertJsonArrayNotEmpty($json): void
     {
-        $data = json_decode($json, true);
-        $this->assertTrue(is_array($data) && !empty($data));
+        $data = json_decode((string) $json, true);
+        $this->assertTrue(is_array($data) && $data !== []);
     }
 
-    #[\ReturnTypeWillChange] public function assertJsonHasProperty($json, $property)
+    #[\ReturnTypeWillChange] public function assertJsonHasProperty($json, $property): void
     {
-        $data = json_decode($json, true);
+        $data = json_decode((string) $json, true);
         $this->assertTrue(array_key_exists($property, $data));
     }
 
-    #[\ReturnTypeWillChange] public function assertJsonPropertyEquals($json, $property, $expected)
+    #[\ReturnTypeWillChange] public function assertJsonPropertyEquals($json, $property, $expected): void
     {
-        $data = json_decode($json, true);
+        $data = json_decode((string) $json, true);
         $this->assertTrue(array_key_exists($property, $data));
         $this->assertEquals($expected, $data[$property]);
     }

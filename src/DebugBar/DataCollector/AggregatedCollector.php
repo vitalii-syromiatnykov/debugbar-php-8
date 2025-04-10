@@ -25,30 +25,19 @@ use DebugBar\DebugBarException;
  */
 class AggregatedCollector implements DataCollectorInterface, ArrayAccess
 {
-    protected $name;
-
-    protected $mergeProperty;
-
-    protected $sort;
-
-    protected $collectors = array();
+    protected $collectors = [];
 
     /**
      * @param string $name
      * @param string $mergeProperty
      * @param boolean $sort
      */
-    #[\ReturnTypeWillChange] public function __construct($name, $mergeProperty = null, $sort = false)
+    #[\ReturnTypeWillChange]
+    public function __construct(protected $name, protected $mergeProperty = null, protected $sort = false)
     {
-        $this->name = $name;
-        $this->mergeProperty = $mergeProperty;
-        $this->sort = $sort;
     }
 
-    /**
-     * @param DataCollectorInterface $collector
-     */
-    #[\ReturnTypeWillChange] public function addCollector(DataCollectorInterface $collector)
+    #[\ReturnTypeWillChange] public function addCollector(DataCollectorInterface $collector): void
     {
         $this->collectors[$collector->getName()] = $collector;
     }
@@ -66,7 +55,7 @@ class AggregatedCollector implements DataCollectorInterface, ArrayAccess
      *
      * @param string $property
      */
-    #[\ReturnTypeWillChange] public function setMergeProperty($property)
+    #[\ReturnTypeWillChange] public function setMergeProperty($property): void
     {
         $this->mergeProperty = $property;
     }
@@ -87,7 +76,7 @@ class AggregatedCollector implements DataCollectorInterface, ArrayAccess
      *
      * @param bool|string $sort
      */
-    #[\ReturnTypeWillChange] public function setSort($sort)
+    #[\ReturnTypeWillChange] public function setSort($sort): void
     {
         $this->sort = $sort;
     }
@@ -105,12 +94,13 @@ class AggregatedCollector implements DataCollectorInterface, ArrayAccess
      */
     #[\ReturnTypeWillChange] public function collect()
     {
-        $aggregate = array();
+        $aggregate = [];
         foreach ($this->collectors as $collector) {
             $data = $collector->collect();
             if ($this->mergeProperty !== null) {
                 $data = $data[$this->mergeProperty];
             }
+
             $aggregate = array_merge($aggregate, $data);
         }
 
@@ -127,15 +117,11 @@ class AggregatedCollector implements DataCollectorInterface, ArrayAccess
     {
         if (is_string($this->sort)) {
             $p = $this->sort;
-            usort($data, function ($a, $b) use ($p) {
-                if ($a[$p] == $b[$p]) {
-                    return 0;
-                }
-                return $a[$p] < $b[$p] ? -1 : 1;
-            });
+            usort($data, fn($a, $b): int => $a[$p] <=> $b[$p]);
         } elseif ($this->sort === true) {
             sort($data);
         }
+
         return $data;
     }
 
@@ -172,7 +158,6 @@ class AggregatedCollector implements DataCollectorInterface, ArrayAccess
 
     /**
      * @param mixed $key
-     * @return bool
      */
     #[\ReturnTypeWillChange] public function offsetExists($key): bool
     {

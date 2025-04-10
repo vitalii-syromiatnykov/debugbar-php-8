@@ -20,54 +20,43 @@ class LocalizationCollector extends DataCollector implements Renderable
      *
      * @return string
      */
-    #[\ReturnTypeWillChange] public function getLocale()
+    #[\ReturnTypeWillChange] public function getLocale(): string|false
     {
         return setlocale(LC_ALL, 0);
     }
 
     /**
      * Get the current translations domain
-     *
-     * @return string
      */
-    #[\ReturnTypeWillChange] public function getDomain()
+    #[\ReturnTypeWillChange] public function getDomain(): string
     {
         return textdomain();
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function collect()
+    #[\ReturnTypeWillChange] public function collect(): array
     {
-        return array(
+        return [
           'locale' => $this->getLocale(),
           'domain' => $this->getDomain(),
-        );
+        ];
     }
 
-    /**
-     * @return string
-     */
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange] public function getName(): string
     {
         return 'localization';
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets(): array
     {
-        return array(
-            'domain' => array(
+        return [
+            'domain' => [
                 'icon' => 'bookmark',
                 'map'  => 'localization.domain',
-            ),
-            'locale' => array(
+            ],
+            'locale' => [
                 'icon' => 'flag',
                 'map'  => 'localization.locale',
-            )
-        );
+            ]
+        ];
     }
 }

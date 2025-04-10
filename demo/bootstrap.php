@@ -19,7 +19,7 @@ $debugbarRenderer = $debugbar->getJavascriptRenderer()
 // $debugbar->setStorage(new DebugBar\Storage\RedisStorage(new Predis\Client()));
 // $debugbarRenderer->setOpenHandlerUrl('open.php');
 
-function render_demo_page(Closure $callback = null)
+function render_demo_page(?Closure $callback = null): void
 {
     global $debugbarRenderer;
 ?>
@@ -41,7 +41,9 @@ function render_demo_page(Closure $callback = null)
     <body>
         <h1>DebugBar Demo</h1>
         <p>DebugBar at the bottom of the page</p>
-        <?php if ($callback) $callback(); ?>
+        <?php if ($callback instanceof \Closure) {
+    $callback();
+} ?>
         <?php
             echo $debugbarRenderer->render();
         ?>

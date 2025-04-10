@@ -16,11 +16,11 @@ use Symfony\Component\VarDumper\Cloner\VarCloner;
  */
 class DebugBarVarDumper implements AssetProvider
 {
-    protected static $defaultClonerOptions = array();
+    protected static $defaultClonerOptions = [];
 
-    protected static $defaultDumperOptions = array(
+    protected static $defaultDumperOptions = [
         'expanded_depth' => 0,
-        'styles' => array(
+        'styles' => [
             // NOTE:  'default' CSS is also specified in debugbar.css
             'default' => 'word-wrap: break-word; white-space: pre-wrap; word-break: normal',
             'num' => 'font-weight:bold; color:#1299DA',
@@ -35,8 +35,8 @@ class DebugBarVarDumper implements AssetProvider
             'key' => 'color:#3A9B26',
             'index' => 'color:#1299DA',
             'ellipsis' => 'color:#A0A000',
-        ),
-    );
+        ],
+    ];
 
     protected $clonerOptions;
 
@@ -62,20 +62,25 @@ class DebugBarVarDumper implements AssetProvider
             } else {
                 $this->cloner = new VarCloner();
             }
+
             if (isset($clonerOptions['additional_casters'])) {
                 $this->cloner->addCasters($clonerOptions['additional_casters']);
             }
+
             if (isset($clonerOptions['max_items'])) {
                 $this->cloner->setMaxItems($clonerOptions['max_items']);
             }
+
             if (isset($clonerOptions['max_string'])) {
                 $this->cloner->setMaxString($clonerOptions['max_string']);
             }
+
             // setMinDepth was added to Symfony 3.4:
             if (isset($clonerOptions['min_depth']) && method_exists($this->cloner, 'setMinDepth')) {
                 $this->cloner->setMinDepth($clonerOptions['min_depth']);
             }
         }
+
         return $this->cloner;
     }
 
@@ -93,6 +98,7 @@ class DebugBarVarDumper implements AssetProvider
                 $this->dumper->setStyles($dumperOptions['styles']);
             }
         }
+
         return $this->dumper;
     }
 
@@ -106,6 +112,7 @@ class DebugBarVarDumper implements AssetProvider
         if ($this->clonerOptions === null) {
             $this->clonerOptions = self::$defaultClonerOptions;
         }
+
         return $this->clonerOptions;
     }
 
@@ -124,7 +131,7 @@ class DebugBarVarDumper implements AssetProvider
      *
      * @param array $options
      */
-    #[\ReturnTypeWillChange] public function mergeClonerOptions($options)
+    #[\ReturnTypeWillChange] public function mergeClonerOptions($options): void
     {
         $this->clonerOptions = $options + $this->getClonerOptions();
         $this->cloner = null;
@@ -145,9 +152,9 @@ class DebugBarVarDumper implements AssetProvider
      *
      * @param array $options
      */
-    #[\ReturnTypeWillChange] public function resetClonerOptions($options = null)
+    #[\ReturnTypeWillChange] public function resetClonerOptions($options = null): void
     {
-        $this->clonerOptions = ($options ?: array()) + self::$defaultClonerOptions;
+        $this->clonerOptions = ($options ?: []) + self::$defaultClonerOptions;
         $this->cloner = null;
     }
 
@@ -161,6 +168,7 @@ class DebugBarVarDumper implements AssetProvider
         if ($this->dumperOptions === null) {
             $this->dumperOptions = self::$defaultDumperOptions;
         }
+
         return $this->dumperOptions;
     }
 
@@ -180,7 +188,7 @@ class DebugBarVarDumper implements AssetProvider
      *
      * @param array $options
      */
-    #[\ReturnTypeWillChange] public function mergeDumperOptions($options)
+    #[\ReturnTypeWillChange] public function mergeDumperOptions($options): void
     {
         $this->dumperOptions = $options + $this->getDumperOptions();
         $this->dumper = null;
@@ -202,9 +210,9 @@ class DebugBarVarDumper implements AssetProvider
      *
      * @param array $options
      */
-    #[\ReturnTypeWillChange] public function resetDumperOptions($options = null)
+    #[\ReturnTypeWillChange] public function resetDumperOptions($options = null): void
     {
-        $this->dumperOptions = ($options ?: array()) + self::$defaultDumperOptions;
+        $this->dumperOptions = ($options ?: []) + self::$defaultDumperOptions;
         $this->dumper = null;
     }
 
@@ -214,32 +222,33 @@ class DebugBarVarDumper implements AssetProvider
      * @param mixed $data The variable to capture.
      * @return string Serialized variable data.
      */
-    #[\ReturnTypeWillChange] public function captureVar($data)
+    #[\ReturnTypeWillChange] public function captureVar($data): string
     {
         return serialize($this->getCloner()->cloneVar($data));
     }
 
     /**
      * Gets the display options for the HTML dumper.
-     *
-     * @return array
      */
-    protected function getDisplayOptions()
+    protected function getDisplayOptions(): array
     {
-        $displayOptions = array();
+        $displayOptions = [];
         $dumperOptions = $this->getDumperOptions();
         // Only used by Symfony 3.2 and newer:
         if (isset($dumperOptions['expanded_depth'])) {
             $displayOptions['maxDepth'] = $dumperOptions['expanded_depth'];
         }
+
         // Only used by Symfony 3.2 and newer:
         if (isset($dumperOptions['max_string'])) {
             $displayOptions['maxStringLength'] = $dumperOptions['max_string'];
         }
+
         // Only used by Symfony 3.2 and newer:
         if (isset($dumperOptions['file_link_format'])) {
             $displayOptions['fileLinkFormat'] = $dumperOptions['file_link_format'];
         }
+
         return $displayOptions;
     }
 
@@ -251,7 +260,7 @@ class DebugBarVarDumper implements AssetProvider
      *                        of the data.
      * @return string HTML rendering of the variable.
      */
-    #[\ReturnTypeWillChange] public function renderCapturedVar($capturedData, $seekPath = array())
+    #[\ReturnTypeWillChange] public function renderCapturedVar($capturedData, $seekPath = [])
     {
         $data = unserialize($capturedData);
         if (!method_exists($data, 'seek')) {
@@ -278,26 +287,23 @@ class DebugBarVarDumper implements AssetProvider
 
     /**
      * Returns assets required for rendering variables.
-     *
-     * @return array
      */
-    #[\ReturnTypeWillChange] public function getAssets() {
+    #[\ReturnTypeWillChange] public function getAssets(): array {
         $dumper = $this->getDumper();
         $dumper->resetDumpHeader(); // this will cause the default dump header to regenerate
-        return array(
-            'inline_head' => array(
+        return [
+            'inline_head' => [
                 'html_var_dumper' => $dumper->getDumpHeaderByDebugBar(),
-            ),
-        );
+            ],
+        ];
     }
 
     /**
      * Helper function to dump a Data object to HTML.
      *
-     * @param Data $data
      * @return string
      */
-    protected function dump(Data $data)
+    protected function dump(Data $data): string|false
     {
         $dumper = $this->getDumper();
         $output = fopen('php://memory', 'r+b');
@@ -306,6 +312,7 @@ class DebugBarVarDumper implements AssetProvider
         // NOTE:  Symfony 3.2 added the third $extraDisplayOptions parameter.  Older versions will
         // safely ignore it.
         $dumper->dump($data, null, $this->getDisplayOptions());
+
         $result = stream_get_contents($output, -1, 0);
         fclose($output);
         return $result;

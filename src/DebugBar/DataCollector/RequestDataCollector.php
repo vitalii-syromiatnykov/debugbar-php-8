@@ -26,7 +26,7 @@ class RequestDataCollector extends DataCollector implements Renderable, AssetPro
      * @param bool $value
      * @return $this
      */
-    #[\ReturnTypeWillChange] public function useHtmlVarDumper($value = true)
+    #[\ReturnTypeWillChange] public function useHtmlVarDumper($value = true): static
     {
         $this->useHtmlVarDumper = $value;
         return $this;
@@ -43,13 +43,10 @@ class RequestDataCollector extends DataCollector implements Renderable, AssetPro
         return $this->useHtmlVarDumper;
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function collect()
+    #[\ReturnTypeWillChange] public function collect(): array
     {
-        $vars = array('_GET', '_POST', '_SESSION', '_COOKIE', '_SERVER');
-        $data = array();
+        $vars = ['_GET', '_POST', '_SESSION', '_COOKIE', '_SERVER'];
+        $data = [];
 
         foreach ($vars as $var) {
             if (isset($GLOBALS[$var])) {
@@ -65,10 +62,7 @@ class RequestDataCollector extends DataCollector implements Renderable, AssetPro
         return $data;
     }
 
-    /**
-     * @return string
-     */
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange] public function getName(): string
     {
         return 'request';
     }
@@ -77,24 +71,21 @@ class RequestDataCollector extends DataCollector implements Renderable, AssetPro
      * @return array
      */
     #[\ReturnTypeWillChange] public function getAssets() {
-        return $this->isHtmlVarDumperUsed() ? $this->getVarDumper()->getAssets() : array();
+        return $this->isHtmlVarDumperUsed() ? $this->getVarDumper()->getAssets() : [];
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets(): array
     {
         $widget = $this->isHtmlVarDumperUsed()
             ? "PhpDebugBar.Widgets.HtmlVariableListWidget"
             : "PhpDebugBar.Widgets.VariableListWidget";
-        return array(
-            "request" => array(
+        return [
+            "request" => [
                 "icon" => "tags",
                 "widget" => $widget,
                 "map" => "request",
                 "default" => "{}"
-            )
-        );
+            ]
+        ];
     }
 }

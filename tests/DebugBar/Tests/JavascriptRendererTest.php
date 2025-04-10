@@ -2,16 +2,17 @@
 
 namespace DebugBar\Tests;
 
+use DebugBar\DataCollector\MessagesCollector;
 use DebugBar\JavascriptRenderer;
-use DebugBar\DebugBar;
-use DebugBar\StandardDebugBar;
 
 class JavascriptRendererTest extends DebugBarTestCase
 {
+    public $debugbar;
     /** @var JavascriptRenderer  */
     protected $r;
 
-    #[\ReturnTypeWillChange] public function setUp(): void
+    #[\ReturnTypeWillChange]
+    #[\Override] public function setUp(): void
     {
         parent::setUp();
         $this->r = new JavascriptRenderer($this->debugbar);
@@ -19,9 +20,9 @@ class JavascriptRendererTest extends DebugBarTestCase
         $this->r->setBaseUrl('/burl');
     }
 
-    #[\ReturnTypeWillChange] public function testOptions()
+    #[\ReturnTypeWillChange] public function testOptions(): void
     {
-        $this->r->setOptions(array(
+        $this->r->setOptions([
             'base_path' => '/foo',
             'base_url' => '/foo',
             'include_vendors' => false,
@@ -29,21 +30,21 @@ class JavascriptRendererTest extends DebugBarTestCase
             'variable_name' => 'foovar',
             'initialization' => JavascriptRenderer::INITIALIZE_CONTROLS,
             'enable_jquery_noconflict' => true,
-            'controls' => array(
-                'memory' => array(
+            'controls' => [
+                'memory' => [
                     "icon" => "cogs",
                     "map" => "memory.peak_usage_str",
                     "default" => "'0B'"
-                )
-            ),
-            'disable_controls' => array('messages'),
+                ]
+            ],
+            'disable_controls' => ['messages'],
             'ignore_collectors' => 'config',
             'ajax_handler_classname' => 'AjaxFoo',
             'ajax_handler_bind_to_jquery' => false,
             'ajax_handler_auto_show' => false,
             'open_handler_classname' => 'OpenFoo',
             'open_handler_url' => 'open.php'
-        ));
+        ]);
 
         $this->assertEquals('/foo', $this->r->getBasePath());
         $this->assertEquals('/foo', $this->r->getBaseUrl());
@@ -65,21 +66,21 @@ class JavascriptRendererTest extends DebugBarTestCase
         $this->assertEquals('open.php', $this->r->getOpenHandlerUrl());
     }
 
-    #[\ReturnTypeWillChange] public function testAddAssets()
+    #[\ReturnTypeWillChange] public function testAddAssets(): void
     {
         // Use a loop to test deduplication of assets
         for ($i = 0; $i < 2; ++$i) {
             $this->r->addAssets('foo.css', 'foo.js', '/bar', '/foobar');
-            $this->r->addInlineAssets(array('Css' => 'CssTest'), array('Js' => 'JsTest'), array('Head' => 'HeaderTest'));
+            $this->r->addInlineAssets(['Css' => 'CssTest'], ['Js' => 'JsTest'], ['Head' => 'HeaderTest']);
         }
 
         // Make sure all the right assets are returned by getAssets
-        list($css, $js, $inline_css, $inline_js, $inline_head) = $this->r->getAssets();
+        [$css, $js, $inline_css, $inline_js, $inline_head] = $this->r->getAssets();
         $this->assertContains('/bar/foo.css', $css);
         $this->assertContains('/bar/foo.js', $js);
-        $this->assertEquals(array('Css' => 'CssTest'), $inline_css);
-        $this->assertEquals(array('Js' => 'JsTest'), $inline_js);
-        $this->assertEquals(array('Head' => 'HeaderTest'), $inline_head);
+        $this->assertEquals(['Css' => 'CssTest'], $inline_css);
+        $this->assertEquals(['Js' => 'JsTest'], $inline_js);
+        $this->assertEquals(['Head' => 'HeaderTest'], $inline_head);
 
         // Make sure asset files are deduplicated
         $this->assertCount(count(array_unique($css)), $css);
@@ -89,9 +90,9 @@ class JavascriptRendererTest extends DebugBarTestCase
         $this->assertStringContainsString('<script type="text/javascript" src="/foobar/foo.js"></script>', $html);
     }
 
-    #[\ReturnTypeWillChange] public function testGetAssets()
+    #[\ReturnTypeWillChange] public function testGetAssets(): void
     {
-        list($css, $js) = $this->r->getAssets();
+        [$css, $js] = $this->r->getAssets();
         $this->assertContains('/bpath/debugbar.css', $css);
         $this->assertContains('/bpath/widgets.js', $js);
         $this->assertContains('/bpath/vendor/jquery/dist/jquery.min.js', $js);
@@ -102,9 +103,9 @@ class JavascriptRendererTest extends DebugBarTestCase
         $this->assertNotContains('/bpath/vendor/jquery/dist/jquery.min.js', $js);
     }
 
-    #[\ReturnTypeWillChange] public function testRenderHead()
+    #[\ReturnTypeWillChange] public function testRenderHead(): void
     {
-        $this->r->addInlineAssets(array('Css' => 'CssTest'), array('Js' => 'JsTest'), array('Head' => 'HeaderTest'));
+        $this->r->addInlineAssets(['Css' => 'CssTest'], ['Js' => 'JsTest'], ['Head' => 'HeaderTest']);
 
         $html = $this->r->renderHead();
         // Check for file links
@@ -123,15 +124,15 @@ class JavascriptRendererTest extends DebugBarTestCase
         $this->assertStringNotContainsString('noConflict', $html);
     }
 
-    #[\ReturnTypeWillChange] public function testRenderFullInitialization()
+    #[\ReturnTypeWillChange] public function testRenderFullInitialization(): void
     {
-        $this->debugbar->addCollector(new \DebugBar\DataCollector\MessagesCollector());
-        $this->r->addControl('time', array('icon' => 'time', 'map' => 'time', 'default' => '"0s"'));
+        $this->debugbar->addCollector(new MessagesCollector());
+        $this->r->addControl('time', ['icon' => 'time', 'map' => 'time', 'default' => '"0s"']);
         $expected = str_replace("\r\n", "\n", rtrim(file_get_contents(__DIR__ . '/full_init.html')));
         $this->assertStringStartsWith($expected, $this->r->render());
     }
 
-    #[\ReturnTypeWillChange] public function testRenderConstructorOnly()
+    #[\ReturnTypeWillChange] public function testRenderConstructorOnly(): void
     {
         $this->r->setInitialization(JavascriptRenderer::INITIALIZE_CONSTRUCTOR);
         $this->r->setJavascriptClass('Foobar');
@@ -140,14 +141,14 @@ class JavascriptRendererTest extends DebugBarTestCase
         $this->assertStringStartsWith("<script type=\"text/javascript\">\nvar foovar = new Foobar();\nfoovar.addDataSet(", $this->r->render());
     }
 
-    #[\ReturnTypeWillChange] public function testRenderConstructorWithNonce()
+    #[\ReturnTypeWillChange] public function testRenderConstructorWithNonce(): void
     {
         $this->r->setInitialization(JavascriptRenderer::INITIALIZE_CONSTRUCTOR);
         $this->r->setCspNonce('mynonce');
         $this->assertStringStartsWith("<script type=\"text/javascript\" nonce=\"mynonce\">\nvar phpdebugbar = new PhpDebugBar.DebugBar();", $this->r->render());
     }
 
-    #[\ReturnTypeWillChange] public function testJQueryNoConflictAutoDisabling()
+    #[\ReturnTypeWillChange] public function testJQueryNoConflictAutoDisabling(): void
     {
         $this->assertTrue($this->r->isJqueryNoConflictEnabled());
         $this->r->setIncludeVendors(false);
@@ -156,11 +157,11 @@ class JavascriptRendererTest extends DebugBarTestCase
         $this->r->setIncludeVendors('css');
         $this->assertFalse($this->r->isJqueryNoConflictEnabled());
         $this->r->setEnableJqueryNoConflict(true);
-        $this->r->setIncludeVendors(array('css', 'js'));
+        $this->r->setIncludeVendors(['css', 'js']);
         $this->assertTrue($this->r->isJqueryNoConflictEnabled());
     }
 
-    #[\ReturnTypeWillChange] public function testCanDisableSpecificVendors()
+    #[\ReturnTypeWillChange] public function testCanDisableSpecificVendors(): void
     {
         $this->assertStringContainsString('jquery.min.js', $this->r->renderHead());
         $this->r->disableVendor('jquery');

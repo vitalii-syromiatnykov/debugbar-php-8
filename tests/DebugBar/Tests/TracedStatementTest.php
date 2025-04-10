@@ -17,18 +17,17 @@ class TracedStatementTest extends DebugBarTestCase
      *                           where ep.id_exame = <1> and
      *                             ep.id_exame_situacao = <2>'
      *                            ep.id_exame_situacao = <1>_situacao
-     * @return void
      */
-    #[\ReturnTypeWillChange] public function testReplacementParamsQuery()
+    #[\ReturnTypeWillChange] public function testReplacementParamsQuery(): void
     {
         $sql = 'select *
                 from geral.exame_part ep
                 where ep.id_exame = :id_exame and
                       ep.id_exame_situacao = :id_exame_situacao';
-        $params = array(
+        $params = [
             ':id_exame'          => 1,
             ':id_exame_situacao' => 2
-        );
+        ];
         $traced = new TracedStatement($sql, $params);
         $expected = 'select *
                 from geral.exame_part ep
@@ -38,83 +37,83 @@ class TracedStatementTest extends DebugBarTestCase
         $this->assertEquals($expected, $result);
     }
 
-    #[\ReturnTypeWillChange] public function testReplacementParamsContainingBackReferenceSyntaxGeneratesCorrectString()
+    #[\ReturnTypeWillChange] public function testReplacementParamsContainingBackReferenceSyntaxGeneratesCorrectString(): void
     {
         $hashedPassword = '$2y$10$S3Y/kSsx8Z5BPtdd9.k3LOkbQ0egtsUHBT9EGQ.spxsmaEWbrxBW2';
         $sql = "UPDATE user SET password = :password";
 
-        $params = array(
+        $params = [
             ':password' => $hashedPassword,
-        );
+        ];
 
         $traced = new TracedStatement($sql, $params);
 
         $result = $traced->getSqlWithParams();
 
-        $expected = "UPDATE user SET password = <$hashedPassword>";
+        $expected = sprintf('UPDATE user SET password = <%s>', $hashedPassword);
 
         $this->assertEquals($expected, $result);
     }
 
-    #[\ReturnTypeWillChange] public function testReplacementParamsContainingPotentialAdditionalQuestionMarkPlaceholderGeneratesCorrectString()
+    #[\ReturnTypeWillChange] public function testReplacementParamsContainingPotentialAdditionalQuestionMarkPlaceholderGeneratesCorrectString(): void
     {
         $hasQuestionMark = "Asking a question?";
         $string = "Asking for a friend";
 
         $sql = "INSERT INTO questions SET question = ?, detail = ?";
 
-        $params = array($hasQuestionMark, $string);
+        $params = [$hasQuestionMark, $string];
 
         $traced = new TracedStatement($sql, $params);
 
         $result = $traced->getSqlWithParams();
 
-        $expected = "INSERT INTO questions SET question = <$hasQuestionMark>, detail = <$string>";
+        $expected = sprintf('INSERT INTO questions SET question = <%s>, detail = <%s>', $hasQuestionMark, $string);
 
         $this->assertEquals($expected, $result);
 
         $result = $traced->getSqlWithParams("'");
 
-        $expected = "INSERT INTO questions SET question = '$hasQuestionMark', detail = '$string'";
+        $expected = sprintf("INSERT INTO questions SET question = '%s', detail = '%s'", $hasQuestionMark, $string);
 
         $this->assertEquals($expected, $result);
 
         $result = $traced->getSqlWithParams('"');
 
-        $expected = "INSERT INTO questions SET question = \"$hasQuestionMark\", detail = \"$string\"";
+        $expected = sprintf('INSERT INTO questions SET question = "%s", detail = "%s"', $hasQuestionMark, $string);
 
         $this->assertEquals($expected, $result);
     }
 
-    #[\ReturnTypeWillChange] public function testReplacementParamsContainingPotentialAdditionalNamedPlaceholderGeneratesCorrectString()
+    #[\ReturnTypeWillChange] public function testReplacementParamsContainingPotentialAdditionalNamedPlaceholderGeneratesCorrectString(): void
     {
         $hasQuestionMark = "Asking a question with a :string inside";
         $string = "Asking for a friend";
 
         $sql = "INSERT INTO questions SET question = :question, detail = :string";
 
-        $params = array(
+        $params = [
             ':question' => $hasQuestionMark,
             ':string'   => $string,
-        );
+        ];
 
         $traced = new TracedStatement($sql, $params);
 
         $result = $traced->getSqlWithParams();
 
-        $expected = "INSERT INTO questions SET question = <$hasQuestionMark>, detail = <$string>";
+        $expected = sprintf('INSERT INTO questions SET question = <%s>, detail = <%s>', $hasQuestionMark, $string);
 
         $this->assertEquals($expected, $result);
 
         $result = $traced->getSqlWithParams("'");
 
-        $expected = "INSERT INTO questions SET question = '$hasQuestionMark', detail = '$string'";
+        $expected = sprintf("INSERT INTO questions SET question = '%s', detail = '%s'", $hasQuestionMark, $string);
 
         $this->assertEquals($expected, $result);
 
         $result = $traced->getSqlWithParams('"');
 
-        $expected = "INSERT INTO questions SET question = \"$hasQuestionMark\", detail = \"$string\"";
+        $expected = sprintf('INSERT INTO questions SET question = "%s", detail = "%s"', $hasQuestionMark, $string);
 
         $this->assertEquals($expected, $result);
     }
@@ -127,9 +126,8 @@ class TracedStatementTest extends DebugBarTestCase
      *                             on c.id_person = p.id_person
      *                           where c.status = <1> and
      *                           p.status <> :status;
-     * @return void
      */
-    #[\ReturnTypeWillChange] public function testRepeadParamsQuery()
+    #[\ReturnTypeWillChange] public function testRepeadParamsQuery(): void
     {
         $sql = 'select *
                 from geral.person p
@@ -137,9 +135,9 @@ class TracedStatementTest extends DebugBarTestCase
                   on c.id_person = p.id_person
                 where c.status = :status and
                       p.status <> :status';
-        $params = array(
+        $params = [
             ':status' => 1
-        );
+        ];
         $traced = new TracedStatement($sql, $params);
         $expected = 'select *
                 from geral.person p
@@ -156,9 +154,8 @@ class TracedStatementTest extends DebugBarTestCase
      * @bugFix Before fix it: select * from
      *                          `my_table` where `my_field` between
      *                           <2018-01-01> and <2018-01-01>
-     * @return void
      */
-    #[\ReturnTypeWillChange] public function testParametersAreNotRepeated()
+    #[\ReturnTypeWillChange] public function testParametersAreNotRepeated(): void
     {
         $query = 'select * from `my_table` where `my_field` between ? and ?';
         $bindings = [
@@ -168,7 +165,7 @@ class TracedStatementTest extends DebugBarTestCase
 
         $this->assertEquals(
             'select * from `my_table` where `my_field` between <2018-01-01> and <2020-09-01>',
-            (new TracedStatement($query, $bindings))->getSqlWithParams()
+            new TracedStatement($query, $bindings)->getSqlWithParams()
         );
     }
 }

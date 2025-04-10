@@ -7,22 +7,24 @@ use DebugBar\DataCollector\MessagesCollector;
 
 class MessagesCollectorTest extends DebugBarTestCase
 {
-    #[\ReturnTypeWillChange] public function testAddMessageAndLog()
+    #[\ReturnTypeWillChange] public function testAddMessageAndLog(): void
     {
         $c = new MessagesCollector();
         $c->addMessage('foobar');
+
         $msgs = $c->getMessages();
         $this->assertCount(1, $msgs);
         $c->log('notice', 'hello');
         $this->assertCount(2, $c->getMessages());
     }
 
-    #[\ReturnTypeWillChange] public function testAggregate()
+    #[\ReturnTypeWillChange] public function testAggregate(): void
     {
         $a = new MessagesCollector('a');
         $c = new MessagesCollector('c');
         $c->aggregate($a);
         $c->addMessage('message from c');
+
         $a->addMessage('message from a');
         $msgs = $c->getMessages();
         $this->assertCount(2, $msgs);
@@ -30,16 +32,17 @@ class MessagesCollectorTest extends DebugBarTestCase
         $this->assertEquals('a', $msgs[1]['collector']);
     }
 
-    #[\ReturnTypeWillChange] public function testCollect()
+    #[\ReturnTypeWillChange] public function testCollect(): void
     {
         $c = new MessagesCollector();
         $c->addMessage('foo');
+
         $data = $c->collect();
         $this->assertEquals(1, $data['count']);
         $this->assertEquals($c->getMessages(), $data['messages']);
     }
 
-    #[\ReturnTypeWillChange] public function testAssets()
+    #[\ReturnTypeWillChange] public function testAssets(): void
     {
         $c = new MessagesCollector();
         $this->assertEmpty($c->getAssets());
@@ -48,9 +51,9 @@ class MessagesCollectorTest extends DebugBarTestCase
         $this->assertNotEmpty($c->getAssets());
     }
 
-    #[\ReturnTypeWillChange] public function testHtmlMessages()
+    #[\ReturnTypeWillChange] public function testHtmlMessages(): void
     {
-        $var = array('one', 'two');
+        $var = ['one', 'two'];
 
         $c = new MessagesCollector();
         $this->assertFalse($c->isHtmlVarDumperUsed());

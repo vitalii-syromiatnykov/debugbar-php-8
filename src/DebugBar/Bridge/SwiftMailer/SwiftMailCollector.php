@@ -23,7 +23,7 @@ use Swift_Plugins_MessageLogger;
  */
 class SwiftMailCollector extends DataCollector implements Renderable, AssetProvider
 {
-    protected $messagesLogger;
+    protected \Swift_Plugins_MessageLogger $messagesLogger;
 
     #[\ReturnTypeWillChange] public function __construct(Swift_Mailer $mailer)
     {
@@ -31,62 +31,64 @@ class SwiftMailCollector extends DataCollector implements Renderable, AssetProvi
         $mailer->registerPlugin($this->messagesLogger);
     }
 
-    #[\ReturnTypeWillChange] public function collect()
+    #[\ReturnTypeWillChange] public function collect(): array
     {
-        $mails = array();
+        $mails = [];
         foreach ($this->messagesLogger->getMessages() as $msg) {
-            $mails[] = array(
+            $mails[] = [
                 'to' => $this->formatTo($msg->getTo()),
                 'subject' => $msg->getSubject(),
                 'headers' => $msg->getHeaders()->toString()
-            );
+            ];
         }
-        return array(
+
+        return [
             'count' => count($mails),
             'mails' => $mails
-        );
+        ];
     }
 
-    protected function formatTo($to)
+    protected function formatTo($to): string
     {
         if (!$to) {
             return '';
         }
 
-        $f = array();
+        $f = [];
         foreach ($to as $k => $v) {
-            $f[] = (empty($v) ? '' : "$v ") . "<$k>";
+            $f[] = (empty($v) ? '' : $v . ' ') . sprintf('<%s>', $k);
         }
+
         return implode(', ', $f);
     }
 
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange] public function getName(): string
     {
         return 'swiftmailer_mails';
     }
 
-    #[\ReturnTypeWillChange] public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets(): array
     {
-        return array(
-            'emails' => array(
+        return [
+            'emails' => [
                 'icon' => 'inbox',
                 'widget' => 'PhpDebugBar.Widgets.MailsWidget',
                 'map' => 'swiftmailer_mails.mails',
                 'default' => '[]',
                 'title' => 'Mails'
-            ),
-            'emails:badge' => array(
+            ],
+            'emails:badge' => [
                 'map' => 'swiftmailer_mails.count',
                 'default' => 'null'
-            )
-        );
+            ]
+        ];
     }
 
-    #[\ReturnTypeWillChange] public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets(): array
     {
-        return array(
+        return [
             'css' => 'widgets/mails/widget.css',
             'js' => 'widgets/mails/widget.js'
-        );
+        ];
     }
 }

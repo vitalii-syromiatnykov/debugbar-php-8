@@ -15,8 +15,14 @@ use Symfony\Component\VarDumper\Dumper\CliDumper;
 
 class DataFormatter implements DataFormatterInterface
 {
+    /**
+     * @var VarCloner
+     */
     public $cloner;
 
+    /**
+     * @var CliDumper
+     */
     public $dumper;
 
     /**
@@ -30,15 +36,14 @@ class DataFormatter implements DataFormatterInterface
 
     /**
      * @param $data
-     * @return string
      */
-    #[\ReturnTypeWillChange] public function formatVar($data)
+    #[\ReturnTypeWillChange] public function formatVar($data): string
     {
         $output = '';
 
         $this->dumper->dump(
             $this->cloner->cloneVar($data),
-            function ($line, $depth) use (&$output) {
+            function (string $line, $depth) use (&$output): void {
                 // A negative depth means "end of dump"
                 if ($depth >= 0) {
                     // Adds a two spaces indentation to the line
@@ -52,9 +57,8 @@ class DataFormatter implements DataFormatterInterface
 
     /**
      * @param float $seconds
-     * @return string
      */
-    #[\ReturnTypeWillChange] public function formatDuration($seconds)
+    #[\ReturnTypeWillChange] public function formatDuration($seconds): string
     {
         if ($seconds < 0.001) {
             return round($seconds * 1000000) . 'μs';
@@ -63,15 +67,15 @@ class DataFormatter implements DataFormatterInterface
         } elseif ($seconds < 1) {
             return round($seconds * 1000) . 'ms';
         }
+
         return round($seconds, 2) . 's';
     }
 
     /**
      * @param string $size
      * @param int $precision
-     * @return string
      */
-    #[\ReturnTypeWillChange] public function formatBytes($size, $precision = 2)
+    #[\ReturnTypeWillChange] public function formatBytes($size, $precision = 2): string
     {
         if ($size === 0 || $size === null) {
             return "0B";
@@ -81,7 +85,7 @@ class DataFormatter implements DataFormatterInterface
         $size = abs($size);
 
         $base = log($size) / log(1024);
-        $suffixes = array('B', 'KB', 'MB', 'GB', 'TB');
-        return $sign . round(pow(1024, $base - floor($base)), $precision) . $suffixes[(int) floor($base)];
+        $suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
+        return $sign . round(1024 ** ($base - floor($base)), $precision) . $suffixes[(int) floor($base)];
     }
 }

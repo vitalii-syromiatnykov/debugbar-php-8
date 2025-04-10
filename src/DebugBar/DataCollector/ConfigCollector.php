@@ -15,10 +15,6 @@ namespace DebugBar\DataCollector;
  */
 class ConfigCollector extends DataCollector implements Renderable, AssetProvider
 {
-    protected $name;
-
-    protected $data;
-
     // The HTML var dumper requires debug bar users to support the new inline assets, which not all
     // may support yet - so return false by default for now.
     protected $useHtmlVarDumper = false;
@@ -30,7 +26,7 @@ class ConfigCollector extends DataCollector implements Renderable, AssetProvider
      * @param bool $value
      * @return $this
      */
-    #[\ReturnTypeWillChange] public function useHtmlVarDumper($value = true)
+    #[\ReturnTypeWillChange] public function useHtmlVarDumper($value = true): static
     {
         $this->useHtmlVarDumper = $value;
         return $this;
@@ -48,39 +44,34 @@ class ConfigCollector extends DataCollector implements Renderable, AssetProvider
     }
 
     /**
-     * @param array  $data
      * @param string $name
      */
-    #[\ReturnTypeWillChange] public function __construct(array $data = array(), $name = 'config')
+    #[\ReturnTypeWillChange]
+    public function __construct(protected array $data = [], protected $name = 'config')
     {
-        $this->name = $name;
-        $this->data = $data;
     }
 
     /**
      * Sets the data
-     *
-     * @param array $data
      */
-    #[\ReturnTypeWillChange] public function setData(array $data)
+    #[\ReturnTypeWillChange] public function setData(array $data): void
     {
         $this->data = $data;
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function collect()
+    #[\ReturnTypeWillChange] public function collect(): array
     {
-        $data = array();
+        $data = [];
         foreach ($this->data as $k => $v) {
             if ($this->isHtmlVarDumperUsed()) {
                 $v = $this->getVarDumper()->renderVar($v);
-            } else if (!is_string($v)) {
+            } elseif (!is_string($v)) {
                 $v = $this->getDataFormatter()->formatVar($v);
             }
+
             $data[$k] = $v;
         }
+
         return $data;
     }
 
@@ -96,25 +87,22 @@ class ConfigCollector extends DataCollector implements Renderable, AssetProvider
      * @return array
      */
     #[\ReturnTypeWillChange] public function getAssets() {
-        return $this->isHtmlVarDumperUsed() ? $this->getVarDumper()->getAssets() : array();
+        return $this->isHtmlVarDumperUsed() ? $this->getVarDumper()->getAssets() : [];
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets(): array
     {
         $name = $this->getName();
         $widget = $this->isHtmlVarDumperUsed()
             ? "PhpDebugBar.Widgets.HtmlVariableListWidget"
             : "PhpDebugBar.Widgets.VariableListWidget";
-        return array(
-            "$name" => array(
+        return [
+            $name => [
                 "icon" => "gear",
                 "widget" => $widget,
-                "map" => "$name",
+                "map" => $name,
                 "default" => "{}"
-            )
-        );
+            ]
+        ];
     }
 }

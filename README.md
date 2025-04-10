@@ -55,7 +55,7 @@ Integrations with other frameworks:
 The best way to install DebugBar is using [Composer](http://getcomposer.org)
 with the following command:
 
-```composer require maximebf/debugbar```
+```composer require vitalii-syromiatnykov/debugbar-php-8```
 
 ## Quick start
 

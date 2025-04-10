@@ -36,7 +36,7 @@ class MemoryCollector extends DataCollector implements Renderable
      *
      * @param bool $realUsage
      */
-    #[\ReturnTypeWillChange] public function setRealUsage($realUsage)
+    #[\ReturnTypeWillChange] public function setRealUsage($realUsage): void
     {
         $this->realUsage = $realUsage;
     }
@@ -54,43 +54,34 @@ class MemoryCollector extends DataCollector implements Renderable
     /**
      * Updates the peak memory usage value
      */
-    #[\ReturnTypeWillChange] public function updatePeakUsage()
+    #[\ReturnTypeWillChange] public function updatePeakUsage(): void
     {
         $this->peakUsage = memory_get_peak_usage($this->realUsage);
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function collect()
+    #[\ReturnTypeWillChange] public function collect(): array
     {
         $this->updatePeakUsage();
-        return array(
+        return [
             'peak_usage' => $this->peakUsage,
             'peak_usage_str' => $this->getDataFormatter()->formatBytes($this->peakUsage, 0)
-        );
+        ];
     }
 
-    /**
-     * @return string
-     */
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange] public function getName(): string
     {
         return 'memory';
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets(): array
     {
-        return array(
-            "memory" => array(
+        return [
+            "memory" => [
                 "icon" => "cogs",
                 "tooltip" => "Memory Usage",
                 "map" => "memory.peak_usage_str",
                 "default" => "'0B'"
-            )
-        );
+            ]
+        ];
     }
 }

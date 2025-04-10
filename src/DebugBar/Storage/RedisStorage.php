@@ -15,69 +15,58 @@ namespace DebugBar\Storage;
  */
 class RedisStorage implements StorageInterface
 {
-    /** @var \Predis\Client|\Redis */
-    protected $redis;
-
-    /** @var string */
-    protected $hash;
-
     /**
      * @param  \Predis\Client|\Redis $redis Redis Client
      * @param string $hash
      */
-    #[\ReturnTypeWillChange] public function __construct($redis, $hash = 'phpdebugbar')
+    #[\ReturnTypeWillChange]
+    public function __construct(protected $redis, protected $hash = 'phpdebugbar')
     {
-        $this->redis = $redis;
-        $this->hash = $hash;
     }
 
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange] public function save($id, $data)
+    #[\ReturnTypeWillChange] public function save($id, $data): void
     {
-        $this->redis->hSet("$this->hash:meta", $id, serialize($data['__meta']));
+        $this->redis->hSet($this->hash . ':meta', $id, serialize($data['__meta']));
         unset($data['__meta']);
-        $this->redis->hSet("$this->hash:data", $id, serialize($data));
+        $this->redis->hSet($this->hash . ':data', $id, serialize($data));
     }
 
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange] public function get($id)
+    #[\ReturnTypeWillChange] public function get($id): array
     {
-        return array_merge(unserialize($this->redis->hGet("$this->hash:data", $id)),
-            array('__meta' => unserialize($this->redis->hGet("$this->hash:meta", $id))));
+        return array_merge(unserialize($this->redis->hGet($this->hash . ':data', $id)),
+            ['__meta' => unserialize($this->redis->hGet($this->hash . ':meta', $id))]);
     }
 
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange] public function find(array $filters = [], $max = 20, $offset = 0)
+    #[\ReturnTypeWillChange] public function find(array $filters = [], $max = 20, $offset = 0): array
     {
         $results = [];
         $cursor = "0";
-        $isPhpRedis = get_class($this->redis) === 'Redis';
+        $isPhpRedis = $this->redis::class === 'Redis';
 
         do {
             if ($isPhpRedis) {
-                $data = $this->redis->hScan("$this->hash:meta", $cursor);
+                $data = $this->redis->hScan($this->hash . ':meta', $cursor);
             } else {
-                [$cursor, $data] = $this->redis->hScan("$this->hash:meta", $cursor);
+                [$cursor, $data] = $this->redis->hScan($this->hash . ':meta', $cursor);
             }
 
             foreach ($data as $meta) {
-                if ($meta = unserialize($meta)) {
-                    if ($this->filter($meta, $filters)) {
-                        $results[] = $meta;
-                    }
+                if (($meta = unserialize($meta)) && $this->filter($meta, $filters)) {
+                    $results[] = $meta;
                 }
             }
         } while($cursor);
 
-        usort($results, static function ($a, $b) {
-            return $b['utime'] <=> $a['utime'];
-        });
+        usort($results, static fn($a, $b): int => $b['utime'] <=> $a['utime']);
 
         return array_slice($results, $offset, $max);
     }
@@ -85,22 +74,23 @@ class RedisStorage implements StorageInterface
     /**
      * Filter the metadata for matches.
      */
-    protected function filter($meta, $filters)
+    protected function filter($meta, $filters): bool
     {
         foreach ($filters as $key => $value) {
             if (!isset($meta[$key]) || fnmatch($value, $meta[$key]) === false) {
                 return false;
             }
         }
+
         return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange] public function clear()
+    #[\ReturnTypeWillChange] public function clear(): void
     {
-        $this->redis->del("$this->hash:data");
-        $this->redis->del("$this->hash:meta");
+        $this->redis->del($this->hash . ':data');
+        $this->redis->del($this->hash . ':meta');
     }
 }

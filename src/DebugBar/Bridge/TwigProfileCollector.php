@@ -43,16 +43,15 @@ class TwigProfileCollector extends DataCollector implements Renderable, AssetPro
      * @var \Twig_Profiler_Profile
      */
     private $profile;
+
     /**
      * @var \Twig_LoaderInterface
      */
     private $loader;
-    /** @var int */
-    private $templateCount;
-    /** @var int */
-    private $blockCount;
-    /** @var int */
-    private $macroCount;
+    private ?int $templateCount = null;
+    private ?int $blockCount = null;
+    private ?int $macroCount = null;
+
     /**
      * @var array[] {
      * @var string $name
@@ -62,12 +61,11 @@ class TwigProfileCollector extends DataCollector implements Renderable, AssetPro
      * @var string $xdebug_link
      * }
      */
-    private $templates;
+    private ?array $templates = null;
 
     /**
      * TwigProfileCollector constructor.
      *
-     * @param \Twig_Profiler_Profile $profile
      * @param \Twig_LoaderInterface|\Twig_Environment $loaderOrEnv
      */
     #[\ReturnTypeWillChange] public function __construct(\Twig_Profiler_Profile $profile, $loaderOrEnv = null)
@@ -76,40 +74,36 @@ class TwigProfileCollector extends DataCollector implements Renderable, AssetPro
         if ($loaderOrEnv instanceof \Twig_Environment) {
             $loaderOrEnv = $loaderOrEnv->getLoader();
         }
+
         $this->loader = $loaderOrEnv;
     }
 
     /**
      * Returns a hash where keys are control names and their values
      * an array of options as defined in {@see DebugBar\JavascriptRenderer::addControl()}
-     *
-     * @return array
      */
-    #[\ReturnTypeWillChange] public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets(): array
     {
-        return array(
-            'twig'       => array(
+        return [
+            'twig'       => [
                 'icon'    => 'leaf',
                 'widget'  => 'PhpDebugBar.Widgets.TemplatesWidget',
                 'map'     => 'twig',
-                'default' => json_encode(array('templates' => array())),
-            ),
-            'twig:badge' => array(
+                'default' => json_encode(['templates' => []]),
+            ],
+            'twig:badge' => [
                 'map'     => 'twig.badge',
                 'default' => 0,
-            ),
-        );
+            ],
+        ];
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets(): array
     {
-        return array(
+        return [
             'css' => 'widgets/templates/widget.css',
             'js'  => 'widgets/templates/widget.js',
-        );
+        ];
     }
 
     /**
@@ -117,13 +111,15 @@ class TwigProfileCollector extends DataCollector implements Renderable, AssetPro
      *
      * @return array Collected data
      */
-    #[\ReturnTypeWillChange] public function collect()
+    #[\ReturnTypeWillChange] public function collect(): array
     {
-        $this->templateCount = $this->blockCount = $this->macroCount = 0;
-        $this->templates     = array();
+        $this->templateCount = 0;
+        $this->blockCount = 0;
+        $this->macroCount = 0;
+        $this->templates     = [];
         $this->computeData($this->profile);
 
-        return array(
+        return [
             'nb_templates'                => $this->templateCount,
             'nb_blocks'                   => $this->blockCount,
             'nb_macros'                   => $this->macroCount,
@@ -134,21 +130,19 @@ class TwigProfileCollector extends DataCollector implements Renderable, AssetPro
             'callgraph'                   => $this->getHtmlCallGraph(),
             'badge'                       => implode(
                 '/',
-                array(
+                [
                     $this->templateCount,
                     $this->blockCount,
                     $this->macroCount,
-                )
+                ]
             ),
-        );
+        ];
     }
 
     /**
      * Returns the unique name of the collector
-     *
-     * @return string
      */
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange] public function getName(): string
     {
         return 'twig';
     }
@@ -168,30 +162,33 @@ class TwigProfileCollector extends DataCollector implements Renderable, AssetPro
      *  @var bool ajax
      * }
      */
-    #[\ReturnTypeWillChange] public function getXdebugLink($template, $line = 1)
+    #[\ReturnTypeWillChange]
+    #[\Override] public function getXdebugLink($template, $line = 1)
     {
         if (is_null($this->loader)) {
             return null;
         }
+
         $file = $this->loader->getSourceContext($template)->getPath();
 
         return parent::getXdebugLink($file, $line);
     }
 
-    private function computeData(\Twig_Profiler_Profile $profile)
+    private function computeData(\Twig_Profiler_Profile $profile): void
     {
         $this->templateCount += ($profile->isTemplate() ? 1 : 0);
         $this->blockCount    += ($profile->isBlock() ? 1 : 0);
         $this->macroCount    += ($profile->isMacro() ? 1 : 0);
         if ($profile->isTemplate()) {
-            $this->templates[] = array(
+            $this->templates[] = [
                 'name'            => $profile->getName(),
                 'render_time'     => $profile->getDuration(),
                 'render_time_str' => $this->getDataFormatter()->formatDuration($profile->getDuration()),
                 'memory_str'      => $this->getDataFormatter()->formatBytes($profile->getMemoryUsage()),
                 'xdebug_link'     => $this->getXdebugLink($profile->getTemplate()),
-            );
+            ];
         }
+
         foreach ($profile as $p) {
             $this->computeData($p);
         }

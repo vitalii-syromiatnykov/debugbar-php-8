@@ -36,9 +36,12 @@ use Psr\Log\LoggerInterface;
  */
 class PropelCollector extends DataCollector implements BasicLogger, Renderable, AssetProvider
 {
-    protected $logger;
+    /**
+     * @var false
+     */
+    public $logQueriesToLogger;
 
-    protected $statements = array();
+    protected $statements = [];
 
     protected $accumulatedTime = 0;
 
@@ -49,15 +52,17 @@ class PropelCollector extends DataCollector implements BasicLogger, Renderable, 
      *
      * @param PropelConfiguration $config Apply profiling on a specific config
      */
-    public static function enablePropelProfiling(PropelConfiguration $config = null)
+    public static function enablePropelProfiling(?PropelConfiguration $config = null): void
     {
-        if ($config === null) {
+        if (!$config instanceof \PropelConfiguration) {
             $config = Propel::getConfiguration(PropelConfiguration::TYPE_OBJECT);
         }
+
         $config->setParameter('debugpdo.logging.details.method.enabled', true);
         $config->setParameter('debugpdo.logging.details.time.enabled', true);
         $config->setParameter('debugpdo.logging.details.mem.enabled', true);
-        $allMethods = array(
+
+        $allMethods = [
             'PropelPDO::__construct',       // logs connection opening
             'PropelPDO::__destruct',        // logs connection close
             'PropelPDO::exec',              // logs a query
@@ -66,7 +71,7 @@ class PropelCollector extends DataCollector implements BasicLogger, Renderable, 
             'PropelPDO::commit',            // logs a transaction commit
             'PropelPDO::rollBack',          // logs a transaction rollBack (watch out for the capital 'B')
             'DebugPDOStatement::execute',   // logs a query from a prepared statement
-        );
+        ];
         $config->setParameter('debugpdo.logging.methods', $allMethods, false);
     }
 
@@ -74,18 +79,18 @@ class PropelCollector extends DataCollector implements BasicLogger, Renderable, 
      * @param LoggerInterface $logger A logger to forward non-query log lines to
      * @param PropelPDO $conn Bound this collector to a connection only
      */
-    #[\ReturnTypeWillChange] public function __construct(LoggerInterface $logger = null, PropelPDO $conn = null)
+    #[\ReturnTypeWillChange] public function __construct(protected ?LoggerInterface $logger = null, ?PropelPDO $conn = null)
     {
-        if ($conn) {
+        if ($conn instanceof \PropelPDO) {
             $conn->setLogger($this);
         } else {
             Propel::setLogger($this);
         }
-        $this->logger = $logger;
+
         $this->logQueriesToLogger = false;
     }
 
-    #[\ReturnTypeWillChange] public function setLogQueriesToLogger($enable = true)
+    #[\ReturnTypeWillChange] public function setLogQueriesToLogger($enable = true): static
     {
         $this->logQueriesToLogger = $enable;
         return $this;
@@ -96,54 +101,55 @@ class PropelCollector extends DataCollector implements BasicLogger, Renderable, 
         return $this->logQueriesToLogger;
     }
 
-    #[\ReturnTypeWillChange] public function emergency($m)
+    #[\ReturnTypeWillChange] public function emergency($m): void
     {
         $this->log($m, Propel::LOG_EMERG);
     }
 
-    #[\ReturnTypeWillChange] public function alert($m)
+    #[\ReturnTypeWillChange] public function alert($m): void
     {
         $this->log($m, Propel::LOG_ALERT);
     }
 
-    #[\ReturnTypeWillChange] public function crit($m)
+    #[\ReturnTypeWillChange] public function crit($m): void
     {
         $this->log($m, Propel::LOG_CRIT);
     }
 
-    #[\ReturnTypeWillChange] public function err($m)
+    #[\ReturnTypeWillChange] public function err($m): void
     {
         $this->log($m, Propel::LOG_ERR);
     }
 
-    #[\ReturnTypeWillChange] public function warning($m)
+    #[\ReturnTypeWillChange] public function warning($m): void
     {
         $this->log($m, Propel::LOG_WARNING);
     }
 
-    #[\ReturnTypeWillChange] public function notice($m)
+    #[\ReturnTypeWillChange] public function notice($m): void
     {
         $this->log($m, Propel::LOG_NOTICE);
     }
 
-    #[\ReturnTypeWillChange] public function info($m)
+    #[\ReturnTypeWillChange] public function info($m): void
     {
         $this->log($m, Propel::LOG_INFO);
     }
 
-    #[\ReturnTypeWillChange] public function debug($m)
+    #[\ReturnTypeWillChange] public function debug($m): void
     {
         $this->log($m, Propel::LOG_DEBUG);
     }
 
-    #[\ReturnTypeWillChange] public function log($message, $severity = null)
+    #[\ReturnTypeWillChange] public function log($message, $severity = null): void
     {
-        if (strpos($message, 'DebugPDOStatement::execute') !== false) {
-            list($sql, $duration_str) = $this->parseAndLogSqlQuery($message);
+        if (str_contains((string) $message, 'DebugPDOStatement::execute')) {
+            [$sql, $duration_str] = $this->parseAndLogSqlQuery($message);
             if (!$this->logQueriesToLogger) {
                 return;
             }
-            $message = "$sql ($duration_str)";
+
+            $message = sprintf('%s (%s)', $sql, $duration_str);
         }
 
         if ($this->logger !== null) {
@@ -155,11 +161,10 @@ class PropelCollector extends DataCollector implements BasicLogger, Renderable, 
      * Converts Propel log levels to PSR log levels
      *
      * @param int $level
-     * @return string
      */
-    protected function convertLogLevel($level)
+    protected function convertLogLevel($level): string
     {
-        $map = array(
+        $map = [
             Propel::LOG_EMERG => LogLevel::EMERGENCY,
             Propel::LOG_ALERT => LogLevel::ALERT,
             Propel::LOG_CRIT => LogLevel::CRITICAL,
@@ -167,7 +172,7 @@ class PropelCollector extends DataCollector implements BasicLogger, Renderable, 
             Propel::LOG_WARNING => LogLevel::WARNING,
             Propel::LOG_NOTICE => LogLevel::NOTICE,
             Propel::LOG_DEBUG => LogLevel::DEBUG
-        );
+        ];
         return $map[$level];
     }
 
@@ -176,42 +181,42 @@ class PropelCollector extends DataCollector implements BasicLogger, Renderable, 
      *
      * @param string $message
      */
-    protected function parseAndLogSqlQuery($message)
+    protected function parseAndLogSqlQuery($message): array
     {
         $parts = explode('|', $message, 4);
         $sql = trim($parts[3]);
 
         $duration = 0;
-        if (preg_match('/([0-9]+\.[0-9]+)/', $parts[1], $matches)) {
+        if (preg_match('/(\d+\.\d+)/', $parts[1], $matches)) {
             $duration = (float) $matches[1];
         }
 
         $memory = 0;
-        if (preg_match('/([0-9]+\.[0-9]+) ([A-Z]{1,2})/', $parts[2], $matches)) {
+        if (preg_match('/(\d+\.\d+) ([A-Z]{1,2})/', $parts[2], $matches)) {
             $memory = (float) $matches[1];
-            if ($matches[2] == 'KB') {
+            if ($matches[2] === 'KB') {
                 $memory *= 1024;
-            } elseif ($matches[2] == 'MB') {
+            } elseif ($matches[2] === 'MB') {
                 $memory *= 1024 * 1024;
             }
         }
 
-        $this->statements[] = array(
+        $this->statements[] = [
             'sql' => $sql,
             'is_success' => true,
             'duration' => $duration,
             'duration_str' => $this->formatDuration($duration),
             'memory' => $memory,
             'memory_str' => $this->formatBytes($memory)
-        );
+        ];
         $this->accumulatedTime += $duration;
         $this->peakMemory = max($this->peakMemory, $memory);
-        return array($sql, $this->formatDuration($duration));
+        return [$sql, $this->formatDuration($duration)];
     }
 
-    #[\ReturnTypeWillChange] public function collect()
+    #[\ReturnTypeWillChange] public function collect(): array
     {
-        return array(
+        return [
             'nb_statements' => count($this->statements),
             'nb_failed_statements' => 0,
             'accumulated_duration' => $this->accumulatedTime,
@@ -219,35 +224,35 @@ class PropelCollector extends DataCollector implements BasicLogger, Renderable, 
             'peak_memory_usage' => $this->peakMemory,
             'peak_memory_usage_str' => $this->formatBytes($this->peakMemory),
             'statements' => $this->statements
-        );
+        ];
     }
 
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange] public function getName(): string
     {
         return 'propel';
     }
 
-    #[\ReturnTypeWillChange] public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets(): array
     {
-        return array(
-            "propel" => array(
+        return [
+            "propel" => [
                 "icon" => "bolt",
                 "widget" => "PhpDebugBar.Widgets.SQLQueriesWidget",
                 "map" => "propel",
                 "default" => "[]"
-            ),
-            "propel:badge" => array(
+            ],
+            "propel:badge" => [
                 "map" => "propel.nb_statements",
                 "default" => 0
-            )
-        );
+            ]
+        ];
     }
 
-    #[\ReturnTypeWillChange] public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets(): array
     {
-        return array(
+        return [
             'css' => 'widgets/sqlqueries/widget.css',
             'js' => 'widgets/sqlqueries/widget.js'
-        );
+        ];
     }
 }

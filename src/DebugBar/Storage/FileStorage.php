@@ -15,7 +15,7 @@ namespace DebugBar\Storage;
  */
 class FileStorage implements StorageInterface
 {
-    protected $dirname;
+    protected string $dirname;
 
     /**
      * @param string $dirname Directories where to store files
@@ -28,18 +28,19 @@ class FileStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange] public function save($id, $data)
+    #[\ReturnTypeWillChange] public function save($id, $data): void
     {
         if (!file_exists($this->dirname)) {
             mkdir($this->dirname, 0777, true);
         }
+
         file_put_contents($this->makeFilename($id), json_encode($data));
     }
 
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange] public function get($id)
+    #[\ReturnTypeWillChange] public function get($id): mixed
     {
         return json_decode(file_get_contents($this->makeFilename($id)), true);
     }
@@ -47,39 +48,39 @@ class FileStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange] public function find(array $filters = array(), $max = 20, $offset = 0)
+    #[\ReturnTypeWillChange] public function find(array $filters = [], $max = 20, $offset = 0): array
     {
         //Loop through all .json files and remember the modified time and id.
-        $files = array();
+        $files = [];
         foreach (new \DirectoryIterator($this->dirname) as $file) {
-            if ($file->getExtension() == 'json') {
-                $files[] = array(
+            if ($file->getExtension() === 'json') {
+                $files[] = [
                     'time' => $file->getMTime(),
                     'id' => $file->getBasename('.json')
-                );
+                ];
             }
         }
 
         //Sort the files, newest first
-        usort($files, function ($a, $b) {
-                return $a['time'] <=> $b['time'];
-            });
+        usort($files, fn($a, $b): int => $a['time'] <=> $b['time']);
 
         //Load the metadata and filter the results.
-        $results = array();
+        $results = [];
         $i = 0;
         foreach ($files as $file) {
             //When filter is empty, skip loading the offset
-            if ($i++ < $offset && empty($filters)) {
+            if ($i++ < $offset && $filters === []) {
                 $results[] = null;
                 continue;
             }
+
             $data = $this->get($file['id']);
             $meta = $data['__meta'];
             unset($data);
             if ($this->filter($meta, $filters)) {
                 $results[] = $meta;
             }
+
             if (count($results) >= ($max + $offset)) {
                 break;
             }
@@ -93,25 +94,25 @@ class FileStorage implements StorageInterface
      *
      * @param  array $meta
      * @param  array $filters
-     * @return bool
      */
-    protected function filter($meta, $filters)
+    protected function filter($meta, $filters): bool
     {
         foreach ($filters as $key => $value) {
             if (!isset($meta[$key]) || fnmatch($value, $meta[$key]) === false) {
                 return false;
             }
         }
+
         return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange] public function clear()
+    #[\ReturnTypeWillChange] public function clear(): void
     {
         foreach (new \DirectoryIterator($this->dirname) as $file) {
-            if (substr($file->getFilename(), 0, 1) !== '.') {
+            if (!str_starts_with($file->getFilename(), '.')) {
                 unlink($file->getPathname());
             }
         }
@@ -119,9 +120,8 @@ class FileStorage implements StorageInterface
 
     /**
      * @param  string $id
-     * @return string
      */
-    #[\ReturnTypeWillChange] public function makeFilename($id)
+    #[\ReturnTypeWillChange] public function makeFilename($id): string
     {
         return $this->dirname . basename($id). ".json";
     }

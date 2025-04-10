@@ -2,15 +2,14 @@
 
 namespace DebugBar\Tests;
 
-use DebugBar\DebugBar;
 use DebugBar\DebugBarException;
 use DebugBar\Tests\DataCollector\MockCollector;
 use DebugBar\Tests\Storage\MockStorage;
-use DebugBar\RandomRequestIdGenerator;
 
 class DebugBarTest extends DebugBarTestCase
 {
-    #[\ReturnTypeWillChange] public function testAddCollector()
+    public $debugbar;
+    #[\ReturnTypeWillChange] public function testAddCollector(): void
     {
         $this->debugbar->addCollector($c = new MockCollector());
         $this->assertTrue($this->debugbar->hasCollector('mock'));
@@ -18,7 +17,7 @@ class DebugBarTest extends DebugBarTestCase
         $this->assertContains($c, $this->debugbar->getCollectors());
     }
 
-    #[\ReturnTypeWillChange] public function testAddCollectorWithSameName()
+    #[\ReturnTypeWillChange] public function testAddCollectorWithSameName(): void
     {
         $this->debugbar->addCollector(new MockCollector());
 
@@ -27,9 +26,9 @@ class DebugBarTest extends DebugBarTestCase
         $this->debugbar->addCollector(new MockCollector());
     }
 
-    #[\ReturnTypeWillChange] public function testCollect()
+    #[\ReturnTypeWillChange] public function testCollect(): void
     {
-        $data = array('foo' => 'bar');
+        $data = ['foo' => 'bar'];
         $this->debugbar->addCollector(new MockCollector($data));
         $datac = $this->debugbar->collect();
 
@@ -38,7 +37,7 @@ class DebugBarTest extends DebugBarTestCase
         $this->assertEquals($datac, $this->debugbar->getData());
     }
 
-    #[\ReturnTypeWillChange] public function testArrayAccess()
+    #[\ReturnTypeWillChange] public function testArrayAccess(): void
     {
         $this->debugbar->addCollector($c = new MockCollector());
         $this->assertEquals($c, $this->debugbar['mock']);
@@ -46,45 +45,46 @@ class DebugBarTest extends DebugBarTestCase
         $this->assertFalse(isset($this->debugbar['foo']));
     }
 
-    #[\ReturnTypeWillChange] public function testStorage()
+    #[\ReturnTypeWillChange] public function testStorage(): void
     {
         $this->debugbar->setStorage($s = new MockStorage());
-        $this->debugbar->addCollector(new MockCollector(array('foo')));
+        $this->debugbar->addCollector(new MockCollector(['foo']));
+
         $data = $this->debugbar->collect();
         $this->assertEquals($s->data[$this->debugbar->getCurrentRequestId()], $data);
     }
 
-    #[\ReturnTypeWillChange] public function testGetDataAsHeaders()
+    #[\ReturnTypeWillChange] public function testGetDataAsHeaders(): void
     {
-        $this->debugbar->addCollector($c = new MockCollector(array('foo')));
+        $this->debugbar->addCollector($c = new MockCollector(['foo']));
         $headers = $this->debugbar->getDataAsHeaders();
         $this->assertArrayHasKey('phpdebugbar', $headers);
     }
 
-    #[\ReturnTypeWillChange] public function testSendDataInHeaders()
+    #[\ReturnTypeWillChange] public function testSendDataInHeaders(): void
     {
         $http = $this->debugbar->getHttpDriver();
-        $this->debugbar->addCollector($c = new MockCollector(array('foo')));
+        $this->debugbar->addCollector($c = new MockCollector(['foo']));
 
         $this->debugbar->sendDataInHeaders();
         $this->assertArrayHasKey('phpdebugbar', $http->headers);
     }
 
-    #[\ReturnTypeWillChange] public function testSendDataInHeadersWithOpenHandler()
+    #[\ReturnTypeWillChange] public function testSendDataInHeadersWithOpenHandler(): void
     {
         $http = $this->debugbar->getHttpDriver();
         $this->debugbar->setStorage($s = new MockStorage());
-        $this->debugbar->addCollector($c = new MockCollector(array('foo')));
+        $this->debugbar->addCollector($c = new MockCollector(['foo']));
 
         $this->debugbar->sendDataInHeaders(true);
         $this->assertArrayHasKey('phpdebugbar-id', $http->headers);
         $this->assertEquals($this->debugbar->getCurrentRequestId(), $http->headers['phpdebugbar-id']);
     }
 
-    #[\ReturnTypeWillChange] public function testStackedData()
+    #[\ReturnTypeWillChange] public function testStackedData(): void
     {
         $http = $this->debugbar->getHttpDriver();
-        $this->debugbar->addCollector($c = new MockCollector(array('foo')));
+        $this->debugbar->addCollector($c = new MockCollector(['foo']));
         $this->debugbar->stackData();
 
         $this->assertArrayHasKey($ns = $this->debugbar->getStackDataSessionNamespace(), $http->session);
@@ -101,11 +101,11 @@ class DebugBarTest extends DebugBarTestCase
         $this->assertEquals($c->collect(), $data[$id]['mock']);
     }
 
-    #[\ReturnTypeWillChange] public function testStackedDataWithStorage()
+    #[\ReturnTypeWillChange] public function testStackedDataWithStorage(): void
     {
         $http = $this->debugbar->getHttpDriver();
         $this->debugbar->setStorage($s = new MockStorage());
-        $this->debugbar->addCollector($c = new MockCollector(array('foo')));
+        $this->debugbar->addCollector($c = new MockCollector(['foo']));
         $this->debugbar->stackData();
 
         $id = $this->debugbar->getCurrentRequestId();

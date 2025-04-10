@@ -7,11 +7,9 @@ namespace DebugBar\DataCollector\PDO;
  */
 class TracedStatement
 {
-    protected $sql;
-
     protected $rowCount;
 
-    protected $parameters;
+    protected array $parameters;
 
     protected $startTime;
 
@@ -28,21 +26,13 @@ class TracedStatement
     protected $exception;
 
     /**
-     * @param string $sql
-     * @param array $params
      * @param string $preparedId
      */
-    #[\ReturnTypeWillChange] public function __construct(string $sql, array $params = [], $preparedId = null)
+    #[\ReturnTypeWillChange] public function __construct(protected string $sql, array $params = [], public $preparedId = null)
     {
-        $this->sql = $sql;
         $this->parameters = $this->checkParameters($params);
-        $this->preparedId = $preparedId;
     }
 
-    /**
-     * @param null $startTime
-     * @param null $startMemory
-     */
     #[\ReturnTypeWillChange] public function start($startTime = null, $startMemory = null) : void
     {
         $this->startTime = $startTime ?: microtime(true);
@@ -51,11 +41,8 @@ class TracedStatement
 
     /**
      * @param \Exception|null $exception
-     * @param int $rowCount
-     * @param float $endTime
-     * @param int $endMemory
      */
-    #[\ReturnTypeWillChange] public function end(\Exception $exception = null, int $rowCount = 0, float $endTime = null, int $endMemory = null) : void
+    #[\ReturnTypeWillChange] public function end(?\Exception $exception = null, int $rowCount = 0, ?float $endTime = null, ?int $endMemory = null) : void
     {
         $this->endTime = $endTime ?: microtime(true);
         $this->duration = $this->endTime - $this->startTime;
@@ -67,9 +54,6 @@ class TracedStatement
 
     /**
      * Check parameters for illegal (non UTF-8) strings, like Binary data.
-     *
-     * @param array $params
-     * @return array
      */
     #[\ReturnTypeWillChange] public function checkParameters(array $params) : array
     {
@@ -78,13 +62,12 @@ class TracedStatement
                 $param = '[BINARY DATA]';
             }
         }
+
         return $params;
     }
 
     /**
      * Returns the SQL string used for the query, without filled parameters
-     *
-     * @return string
      */
     #[\ReturnTypeWillChange] public function getSql() : string
     {
@@ -93,9 +76,6 @@ class TracedStatement
 
     /**
      * Returns the SQL string with any parameters used embedded
-     *
-     * @param string $quotationChar
-     * @return string
      */
     #[\ReturnTypeWillChange] public function getSqlWithParams(string $quotationChar = '<>') : string
     {
@@ -103,7 +83,8 @@ class TracedStatement
             $quoteLeft = substr($quotationChar, 0, $l / 2);
             $quoteRight = substr($quotationChar, $l / 2);
         } else {
-            $quoteLeft = $quoteRight = $quotationChar;
+            $quoteLeft = $quotationChar;
+            $quoteRight = $quotationChar;
         }
 
         $sql = $this->sql;
@@ -114,33 +95,30 @@ class TracedStatement
 
             $backRefSafeV = strtr($v, $cleanBackRefCharMap);
 
-            $v = "$quoteLeft$backRefSafeV$quoteRight";
+            $v = $quoteLeft . $backRefSafeV . $quoteRight;
 
             if (is_numeric($k)) {
                 $marker = "\?";
             } else {
-                $marker = (preg_match("/^:/", $k)) ? $k : ":" . $k;
+                $marker = (preg_match("/^:/", (string) $k)) ? $k : ":" . $k;
             }
 
-            $matchRule = "/({$marker}(?!\w))(?=(?:[^$quotationChar]|[$quotationChar][^$quotationChar]*[$quotationChar])*$)/";
-            $count = mb_substr_count($sql, $k);
+            $matchRule = sprintf('/(%s(?!\w))(?=(?:[^%s]|[%s][^%s]*[%s])*$)/', $marker, $quotationChar, $quotationChar, $quotationChar, $quotationChar);
+            $count = mb_substr_count((string) $sql, (string) $k);
             if ($count < 1) {
-                $count = mb_substr_count($sql, $matchRule);
+                $count = mb_substr_count((string) $sql, $matchRule);
             }
+
             for ($i = 0; $i <= $count; $i++) {
-                $sql = preg_replace($matchRule, $v, $sql, 1);
+                $sql = preg_replace($matchRule, $v, (string) $sql, 1);
             }
         }
 
-        $sql = strtr($sql, array_flip($cleanBackRefCharMap));
-
-        return $sql;
+        return strtr($sql, array_flip($cleanBackRefCharMap));
     }
 
     /**
      * Returns the number of rows affected/returned
-     *
-     * @return int
      */
     #[\ReturnTypeWillChange] public function getRowCount() : int
     {
@@ -149,22 +127,19 @@ class TracedStatement
 
     /**
      * Returns an array of parameters used with the query
-     *
-     * @return array
      */
     #[\ReturnTypeWillChange] public function getParameters() : array
     {
         $params = [];
         foreach ($this->parameters as $name => $param) {
-            $params[$name] = htmlentities($param?:"", ENT_QUOTES, 'UTF-8', false);
+            $params[$name] = htmlentities((string) $param?:"", ENT_QUOTES, 'UTF-8', false);
         }
+
         return $params;
     }
 
     /**
      * Returns the prepared statement id
-     *
-     * @return string
      */
     #[\ReturnTypeWillChange] public function getPreparedId() : string
     {
@@ -173,25 +148,17 @@ class TracedStatement
 
     /**
      * Checks if this is a prepared statement
-     *
-     * @return boolean
      */
     #[\ReturnTypeWillChange] public function isPrepared() : bool
     {
         return $this->preparedId !== null;
     }
 
-    /**
-     * @return float
-     */
     #[\ReturnTypeWillChange] public function getStartTime() : float
     {
         return $this->startTime;
     }
 
-    /**
-     * @return float
-     */
     #[\ReturnTypeWillChange] public function getEndTime() : float
     {
         return $this->endTime;
@@ -199,25 +166,17 @@ class TracedStatement
 
     /**
      * Returns the duration in seconds + microseconds of the execution
-     *
-     * @return float
      */
     #[\ReturnTypeWillChange] public function getDuration() : float
     {
         return $this->duration;
     }
 
-    /**
-     * @return int
-     */
     #[\ReturnTypeWillChange] public function getStartMemory() : int
     {
         return $this->startMemory;
     }
 
-    /**
-     * @return int
-     */
     #[\ReturnTypeWillChange] public function getEndMemory() : int
     {
         return $this->endMemory;
@@ -225,8 +184,6 @@ class TracedStatement
 
     /**
      * Returns the memory usage during the execution
-     *
-     * @return int
      */
     #[\ReturnTypeWillChange] public function getMemoryUsage() : int
     {
@@ -235,8 +192,6 @@ class TracedStatement
 
     /**
      * Checks if the statement was successful
-     *
-     * @return boolean
      */
     #[\ReturnTypeWillChange] public function isSuccess() : bool
     {
@@ -245,8 +200,6 @@ class TracedStatement
 
     /**
      * Returns the exception triggered
-     *
-     * @return \Exception
      */
     #[\ReturnTypeWillChange] public function getException() : \Exception
 	{
@@ -265,8 +218,6 @@ class TracedStatement
 
     /**
      * Returns the exception's message
-     *
-     * @return string
      */
     #[\ReturnTypeWillChange] public function getErrorMessage() : string
     {

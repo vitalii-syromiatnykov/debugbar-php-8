@@ -11,15 +11,11 @@ use DebugBar\DataCollector\PDO\TraceablePDOStatement;
  */
 class TraceablePDO extends PDO
 {
-    /** @var PDO */
-    protected $pdo;
-
     /** @var TracedStatement[] */
     protected $executedStatements = [];
 
-    #[\ReturnTypeWillChange] public function __construct(PDO $pdo)
+    #[\ReturnTypeWillChange] public function __construct(protected \PDO $pdo)
     {
-        $this->pdo = $pdo;
         $this->pdo->setAttribute(PDO::ATTR_STATEMENT_CLASS, [TraceablePDOStatement::class, [$this]]);
     }
 
@@ -184,7 +180,7 @@ class TraceablePDO extends PDO
      * @param  mixed $value
      * @return bool TRUE on success or FALSE on failure.
      */
-    #[\ReturnTypeWillChange] public function setAttribute($attribute, $value)
+    #[\ReturnTypeWillChange] public function setAttribute($attribute, $value): bool
     {
         return $this->pdo->setAttribute($attribute, $value);
     }
@@ -194,7 +190,6 @@ class TraceablePDO extends PDO
      *
      * @param  string $method
      * @param  string $sql
-     * @param  array  $args
      * @return mixed  The result of the call
      */
     protected function profileCall($method, $sql, array $args)
@@ -205,8 +200,8 @@ class TraceablePDO extends PDO
         $ex = null;
         try {
             $result = $this->__call($method, $args);
-        } catch (PDOException $e) {
-            $ex = $e;
+        } catch (PDOException $pdoException) {
+            $ex = $pdoException;
         }
 
         if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) !== PDO::ERRMODE_EXCEPTION && $result === false) {
@@ -217,18 +212,17 @@ class TraceablePDO extends PDO
         $trace->end($ex);
         $this->addExecutedStatement($trace);
 
-        if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_EXCEPTION && $ex !== null) {
+        if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_EXCEPTION && $ex instanceof \PDOException) {
             throw $ex;
         }
+
         return $result;
     }
 
     /**
      * Adds an executed TracedStatement
-     *
-     * @param TracedStatement $stmt
      */
-    #[\ReturnTypeWillChange] public function addExecutedStatement(TracedStatement $stmt)
+    #[\ReturnTypeWillChange] public function addExecutedStatement(TracedStatement $stmt): void
     {
         $this->executedStatements[] = $stmt;
     }
@@ -238,9 +232,9 @@ class TraceablePDO extends PDO
      *
      * @return int
      */
-    #[\ReturnTypeWillChange] public function getAccumulatedStatementsDuration()
+    #[\ReturnTypeWillChange] public function getAccumulatedStatementsDuration(): float|int|array|null
     {
-        return array_reduce($this->executedStatements, function ($v, $s) { return $v + $s->getDuration(); });
+        return array_reduce($this->executedStatements, fn($v, $s) => $v + $s->getDuration());
     }
 
     /**
@@ -248,9 +242,9 @@ class TraceablePDO extends PDO
      *
      * @return int
      */
-    #[\ReturnTypeWillChange] public function getMemoryUsage()
+    #[\ReturnTypeWillChange] public function getMemoryUsage(): float|int|array|null
     {
-        return array_reduce($this->executedStatements, function ($v, $s) { return $v + $s->getMemoryUsage(); });
+        return array_reduce($this->executedStatements, fn($v, $s) => $v + $s->getMemoryUsage());
     }
 
     /**
@@ -278,9 +272,9 @@ class TraceablePDO extends PDO
      *
      * @return TracedStatement[]
      */
-    #[\ReturnTypeWillChange] public function getFailedExecutedStatements()
+    #[\ReturnTypeWillChange] public function getFailedExecutedStatements(): array
     {
-        return array_filter($this->executedStatements, function ($s) { return !$s->isSuccess(); });
+        return array_filter($this->executedStatements, fn($s): bool => !$s->isSuccess());
     }
 
     /**

@@ -6,14 +6,17 @@ use DebugBar\Storage\StorageInterface;
 
 class MockStorage implements StorageInterface
 {
+    /**
+     * @var mixed[]
+     */
     public $data;
 
-    #[\ReturnTypeWillChange] public function __construct(array $data = array())
+    #[\ReturnTypeWillChange] public function __construct(array $data = [])
     {
         $this->data = $data;
     }
 
-    #[\ReturnTypeWillChange] public function save($id, $data)
+    #[\ReturnTypeWillChange] public function save($id, $data): void
     {
         $this->data[$id] = $data;
     }
@@ -23,13 +26,13 @@ class MockStorage implements StorageInterface
         return $this->data[$id];
     }
 
-    #[\ReturnTypeWillChange] public function find(array $filters = array(), $max = 20, $offset = 0)
+    #[\ReturnTypeWillChange] public function find(array $filters = [], $max = 20, $offset = 0): array
     {
         return array_slice($this->data, $offset, $max);
     }
 
-    #[\ReturnTypeWillChange] public function clear()
+    #[\ReturnTypeWillChange] public function clear(): void
     {
-        $this->data = array();
+        $this->data = [];
     }
 }

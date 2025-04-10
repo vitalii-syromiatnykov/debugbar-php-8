@@ -39,5 +39,5 @@ interface AssetProvider
      *
      * @return array
      */
-    function getAssets();
+    public function getAssets();
 }

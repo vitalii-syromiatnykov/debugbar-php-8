@@ -44,72 +44,62 @@ class DoctrineCollector extends DataCollector implements Renderable, AssetProvid
         if ($debugStackOrEntityManager instanceof EntityManager) {
             $debugStackOrEntityManager = $debugStackOrEntityManager->getConnection()->getConfiguration()->getSQLLogger();
         }
+
         if (!($debugStackOrEntityManager instanceof DebugStack)) {
             throw new DebugBarException("'DoctrineCollector' requires an 'EntityManager' or 'DebugStack' object");
         }
+
         $this->debugStack = $debugStackOrEntityManager;
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function collect()
+    #[\ReturnTypeWillChange] public function collect(): array
     {
-        $queries = array();
+        $queries = [];
         $totalExecTime = 0;
         foreach ($this->debugStack->queries as $q) {
-            $queries[] = array(
+            $queries[] = [
                 'sql' => $q['sql'],
                 'params' => (object) $q['params'],
                 'duration' => $q['executionMS'],
                 'duration_str' => $this->formatDuration($q['executionMS'])
-            );
+            ];
             $totalExecTime += $q['executionMS'];
         }
 
-        return array(
+        return [
             'nb_statements' => count($queries),
             'accumulated_duration' => $totalExecTime,
             'accumulated_duration_str' => $this->formatDuration($totalExecTime),
             'statements' => $queries
-        );
+        ];
     }
 
-    /**
-     * @return string
-     */
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange] public function getName(): string
     {
         return 'doctrine';
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets(): array
     {
-        return array(
-            "database" => array(
+        return [
+            "database" => [
                 "icon" => "arrow-right",
                 "widget" => "PhpDebugBar.Widgets.SQLQueriesWidget",
                 "map" => "doctrine",
                 "default" => "[]"
-            ),
-            "database:badge" => array(
+            ],
+            "database:badge" => [
                 "map" => "doctrine.nb_statements",
                 "default" => 0
-            )
-        );
+            ]
+        ];
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets(): array
     {
-        return array(
+        return [
             'css' => 'widgets/sqlqueries/widget.css',
             'js' => 'widgets/sqlqueries/widget.js'
-        );
+        ];
     }
 }

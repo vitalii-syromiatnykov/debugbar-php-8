@@ -36,29 +36,16 @@ use Twig\Profiler\Profile;
 class NamespacedTwigProfileCollector extends DataCollector implements Renderable, AssetProvider
 {
     /**
-     * @var Profile
-     */
-    private $profile;
-
-    /**
      * @var LoaderInterface|Environment|null
      */
     private $loader;
 
-    /**
-     * @var int
-     */
-    private $templateCount;
+    private ?int $templateCount = null;
 
-    /**
-     * @var int
-     */
-    private $blockCount;
+    private ?int $blockCount = null;
 
-    /**
-     * @var int
-     */
-    private $macroCount;
+    private ?int $macroCount = null;
+
     /**
      * @var array[] {
      * @var string $name
@@ -68,30 +55,27 @@ class NamespacedTwigProfileCollector extends DataCollector implements Renderable
      * @var string $xdebug_link
      * }
      */
-    private $templates;
+    private ?array $templates = null;
 
     /**
      * TwigProfileCollector constructor.
      *
-     * @param Profile $profile
      * @param LoaderInterface|Environment $loaderOrEnv
      */
-    #[\ReturnTypeWillChange] public function __construct(Profile $profile, $loaderOrEnv = null)
+    #[\ReturnTypeWillChange] public function __construct(private readonly Profile $profile, $loaderOrEnv = null)
     {
-        $this->profile = $profile;
         if ($loaderOrEnv instanceof Environment) {
             $loaderOrEnv = $loaderOrEnv->getLoader();
         }
+
         $this->loader = $loaderOrEnv;
     }
 
     /**
      * Returns a hash where keys are control names and their values
      * an array of options as defined in {@see \DebugBar\JavascriptRenderer::addControl()}
-     *
-     * @return array
      */
-    #[\ReturnTypeWillChange] public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets(): array
     {
         return [
             'twig' => [
@@ -107,10 +91,7 @@ class NamespacedTwigProfileCollector extends DataCollector implements Renderable
         ];
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets(): array
     {
         return [
             'css' => 'widgets/templates/widget.css',
@@ -123,9 +104,11 @@ class NamespacedTwigProfileCollector extends DataCollector implements Renderable
      *
      * @return array Collected data
      */
-    #[\ReturnTypeWillChange] public function collect()
+    #[\ReturnTypeWillChange] public function collect(): array
     {
-        $this->templateCount = $this->blockCount = $this->macroCount = 0;
+        $this->templateCount = 0;
+        $this->blockCount = 0;
+        $this->macroCount = 0;
         $this->templates = [];
         $this->computeData($this->profile);
 
@@ -151,15 +134,13 @@ class NamespacedTwigProfileCollector extends DataCollector implements Renderable
 
     /**
      * Returns the unique name of the collector
-     *
-     * @return string
      */
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange] public function getName(): string
     {
         return 'twig';
     }
 
-    #[\ReturnTypeWillChange] public function getHtmlCallGraph()
+    #[\ReturnTypeWillChange] public function getHtmlCallGraph(): string
     {
         $dumper = new HtmlDumper();
         return $dumper->dump($this->profile);
@@ -173,17 +154,19 @@ class NamespacedTwigProfileCollector extends DataCollector implements Renderable
      * @var bool ajax
      * }
      */
-    #[\ReturnTypeWillChange] public function getXdebugLink($template, $line = 1)
+    #[\ReturnTypeWillChange]
+    #[\Override] public function getXdebugLink($template, $line = 1)
     {
         if (is_null($this->loader)) {
             return null;
         }
+
         $file = $this->loader->getSourceContext($template)->getPath();
 
         return parent::getXdebugLink($file, $line);
     }
 
-    private function computeData(Profile $profile)
+    private function computeData(Profile $profile): void
     {
         $this->templateCount += ($profile->isTemplate() ? 1 : 0);
         $this->blockCount += ($profile->isBlock() ? 1 : 0);
@@ -197,6 +180,7 @@ class NamespacedTwigProfileCollector extends DataCollector implements Renderable
                 'xdebug_link' => $this->getXdebugLink($profile->getTemplate()),
             ];
         }
+
         foreach ($profile as $p) {
             $this->computeData($p);
         }

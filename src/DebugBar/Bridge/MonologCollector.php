@@ -27,31 +27,25 @@ use Monolog\Logger;
  */
 class MonologCollector extends AbstractProcessingHandler implements DataCollectorInterface, Renderable, MessagesAggregateInterface
 {
-    protected $name;
-
-    protected $records = array();
+    protected $records = [];
 
     /**
-     * @param Logger $logger
      * @param int $level
      * @param boolean $bubble
      * @param string $name
      */
-    #[\ReturnTypeWillChange] public function __construct(Logger $logger = null, $level = Logger::DEBUG, $bubble = true, $name = 'monolog')
+    #[\ReturnTypeWillChange] public function __construct(?Logger $logger = null, $level = Logger::DEBUG, $bubble = true, protected $name = 'monolog')
     {
         parent::__construct($level, $bubble);
-        $this->name = $name;
-        if ($logger !== null) {
+        if ($logger instanceof Logger) {
             $this->addLogger($logger);
         }
     }
 
     /**
      * Adds logger which messages you want to log
-     *
-     * @param Logger $logger
      */
-    #[\ReturnTypeWillChange] public function addLogger(Logger $logger)
+    #[\ReturnTypeWillChange] public function addLogger(Logger $logger): void
     {
         $logger->pushHandler($this);
     }
@@ -61,12 +55,12 @@ class MonologCollector extends AbstractProcessingHandler implements DataCollecto
      */
     protected function write($record): void
     {
-        $this->records[] = array(
+        $this->records[] = [
             'message' => $record['formatted'],
             'is_string' => true,
-            'label' => strtolower($record['level_name']),
+            'label' => strtolower((string) $record['level_name']),
             'time' => $record['datetime']->format('U')
-        );
+        ];
     }
 
     /**
@@ -82,10 +76,10 @@ class MonologCollector extends AbstractProcessingHandler implements DataCollecto
      */
     #[\ReturnTypeWillChange] public function collect()
     {
-        return array(
+        return [
             'count' => count($this->records),
             'records' => $this->records
-        );
+        ];
     }
 
     /**
@@ -102,17 +96,17 @@ class MonologCollector extends AbstractProcessingHandler implements DataCollecto
     #[\ReturnTypeWillChange] public function getWidgets()
     {
         $name = $this->getName();
-        return array(
-            $name => array(
+        return [
+            $name => [
                 "icon" => "suitcase",
                 "widget" => "PhpDebugBar.Widgets.MessagesWidget",
-                "map" => "$name.records",
+                "map" => $name . '.records',
                 "default" => "[]"
-            ),
-            "$name:badge" => array(
-                "map" => "$name.count",
+            ],
+            $name . ':badge' => [
+                "map" => $name . '.count',
                 "default" => "null"
-            )
-        );
+            ]
+        ];
     }
 }

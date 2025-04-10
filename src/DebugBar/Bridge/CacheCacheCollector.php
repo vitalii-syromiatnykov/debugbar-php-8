@@ -29,46 +29,41 @@ use Monolog\Logger;
  */
 class CacheCacheCollector extends MonologCollector
 {
-    protected $logger;
+    protected ?Logger $logger;
 
     /**
      * CacheCacheCollector constructor.
-     * @param Cache|null $cache
-     * @param Logger|null $logger
      * @param bool $level
      * @param bool $bubble
      */
-    #[\ReturnTypeWillChange] public function __construct(Cache $cache = null, Logger $logger = null, $level = Logger::DEBUG, $bubble = true)
+    #[\ReturnTypeWillChange] public function __construct(?Cache $cache = null, ?Logger $logger = null, $level = Logger::DEBUG, $bubble = true)
     {
         parent::__construct(null, $level, $bubble);
 
-        if ($logger === null) {
+        if (!$logger instanceof Logger) {
             $logger = new Logger('Cache');
         }
+
         $this->logger = $logger;
 
-        if ($cache !== null) {
+        if ($cache instanceof Cache) {
             $this->addCache($cache);
         }
     }
 
-    /**
-     * @param Cache $cache
-     */
-    #[\ReturnTypeWillChange] public function addCache(Cache $cache)
+    #[\ReturnTypeWillChange] public function addCache(Cache $cache): void
     {
         $backend = $cache->getBackend();
         if (!($backend instanceof LoggingBackend)) {
             $backend = new LoggingBackend($backend, $this->logger);
         }
+
         $cache->setBackend($backend);
         $this->addLogger($backend->getLogger());
     }
 
-    /**
-     * @return string
-     */
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange]
+    #[\Override] public function getName(): string
     {
         return 'cache';
     }

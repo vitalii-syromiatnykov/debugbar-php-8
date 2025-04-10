@@ -9,6 +9,7 @@ class Product
 {
     /** @Id @Column(type="integer") @GeneratedValue **/
     protected $id;
+
     /** @Column(type="string") **/
     protected $name;
 
@@ -22,7 +23,7 @@ class Product
         return $this->name;
     }
 
-    #[\ReturnTypeWillChange] public function setName($name)
+    #[\ReturnTypeWillChange] public function setName($name): void
     {
         $this->name = $name;
     }

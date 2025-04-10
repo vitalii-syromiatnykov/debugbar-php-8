@@ -1,6 +1,6 @@
 <?php
 
-include 'bootstrap.php';
+include __DIR__ . '/bootstrap.php';
 
 if (!isset($_GET['type'])) {
     $_GET['type'] = 'js';
@@ -9,7 +9,7 @@ if (!isset($_GET['type'])) {
 if ($_GET['type'] == 'css') {
     header('content-type', 'text/css');
     $debugbarRenderer->dumpCssAssets();
-} else if ($_GET['type'] == 'js') {
+} elseif ($_GET['type'] == 'js') {
     header('content-type', 'text/javascript');
     $debugbarRenderer->dumpJsAssets();
 }

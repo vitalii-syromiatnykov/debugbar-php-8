@@ -31,59 +31,63 @@ use DebugBar\DataCollector\Renderable;
  */
 class TwigCollector extends DataCollector implements Renderable, AssetProvider
 {
+    /**
+     * @var TraceableTwigEnvironment
+     */
+    public $twig;
     #[\ReturnTypeWillChange] public function __construct(TraceableTwigEnvironment $twig)
     {
         $this->twig = $twig;
     }
 
-    #[\ReturnTypeWillChange] public function collect()
+    #[\ReturnTypeWillChange] public function collect(): array
     {
-        $templates = array();
+        $templates = [];
         $accuRenderTime = 0;
 
         foreach ($this->twig->getRenderedTemplates() as $tpl) {
             $accuRenderTime += $tpl['render_time'];
-            $templates[] = array(
+            $templates[] = [
                 'name' => $tpl['name'],
                 'render_time' => $tpl['render_time'],
                 'render_time_str' => $this->formatDuration($tpl['render_time'])
-            );
+            ];
         }
 
-        return array(
+        return [
             'nb_templates' => count($templates),
             'templates' => $templates,
             'accumulated_render_time' => $accuRenderTime,
             'accumulated_render_time_str' => $this->formatDuration($accuRenderTime)
-        );
+        ];
     }
 
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange] public function getName(): string
     {
         return 'twig';
     }
 
-    #[\ReturnTypeWillChange] public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets(): array
     {
-        return array(
-            'twig' => array(
+        return [
+            'twig' => [
                 'icon' => 'leaf',
                 'widget' => 'PhpDebugBar.Widgets.TemplatesWidget',
                 'map' => 'twig',
-                'default' => json_encode(array('templates' => array())),
-            ),
-            'twig:badge' => array(
+                'default' => json_encode(['templates' => []]),
+            ],
+            'twig:badge' => [
                 'map' => 'twig.nb_templates',
                 'default' => 0
-            )
-        );
+            ]
+        ];
     }
 
-    #[\ReturnTypeWillChange] public function getAssets()
+    #[\ReturnTypeWillChange] public function getAssets(): array
     {
-        return array(
+        return [
             'css' => 'widgets/templates/widget.css',
             'js' => 'widgets/templates/widget.js'
-        );
+        ];
     }
 }

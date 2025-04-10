@@ -29,25 +29,16 @@ use Twig_TokenStream;
  */
 class TraceableTwigEnvironment extends Twig_Environment
 {
-    protected $twig;
+    protected $renderedTemplates = [];
 
-    protected $renderedTemplates = array();
-
-    protected $timeDataCollector;
-
-    /**
-     * @param Twig_Environment $twig
-     * @param TimeDataCollector $timeDataCollector
-     */
-    #[\ReturnTypeWillChange] public function __construct(Twig_Environment $twig, TimeDataCollector $timeDataCollector = null)
+    #[\ReturnTypeWillChange]
+    public function __construct(protected \Twig_Environment $twig, protected ?TimeDataCollector $timeDataCollector = null)
     {
-        $this->twig = $twig;
-        $this->timeDataCollector = $timeDataCollector;
     }
 
     #[\ReturnTypeWillChange] public function __call($name, $arguments)
     {
-        return call_user_func_array(array($this->twig, $name), $arguments);
+        return call_user_func_array([$this->twig, $name], $arguments);
     }
 
     #[\ReturnTypeWillChange] public function getRenderedTemplates()
@@ -55,7 +46,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->renderedTemplates;
     }
 
-    #[\ReturnTypeWillChange] public function addRenderedTemplate(array $info)
+    #[\ReturnTypeWillChange] public function addRenderedTemplate(array $info): void
     {
         $this->renderedTemplates[] = $info;
     }
@@ -70,17 +61,17 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getBaseTemplateClass();
     }
 
-    #[\ReturnTypeWillChange] public function setBaseTemplateClass($class)
+    #[\ReturnTypeWillChange] public function setBaseTemplateClass($class): void
     {
         $this->twig->setBaseTemplateClass($class);
     }
 
-    #[\ReturnTypeWillChange] public function enableDebug()
+    #[\ReturnTypeWillChange] public function enableDebug(): void
     {
         $this->twig->enableDebug();
     }
 
-    #[\ReturnTypeWillChange] public function disableDebug()
+    #[\ReturnTypeWillChange] public function disableDebug(): void
     {
         $this->twig->disableDebug();
     }
@@ -90,12 +81,12 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->isDebug();
     }
 
-    #[\ReturnTypeWillChange] public function enableAutoReload()
+    #[\ReturnTypeWillChange] public function enableAutoReload(): void
     {
         $this->twig->enableAutoReload();
     }
 
-    #[\ReturnTypeWillChange] public function disableAutoReload()
+    #[\ReturnTypeWillChange] public function disableAutoReload(): void
     {
         $this->twig->disableAutoReload();
     }
@@ -105,12 +96,12 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->isAutoReload();
     }
 
-    #[\ReturnTypeWillChange] public function enableStrictVariables()
+    #[\ReturnTypeWillChange] public function enableStrictVariables(): void
     {
         $this->twig->enableStrictVariables();
     }
 
-    #[\ReturnTypeWillChange] public function disableStrictVariables()
+    #[\ReturnTypeWillChange] public function disableStrictVariables(): void
     {
         $this->twig->disableStrictVariables();
     }
@@ -125,7 +116,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getCache($original);
     }
 
-    #[\ReturnTypeWillChange] public function setCache($cache)
+    #[\ReturnTypeWillChange] public function setCache($cache): void
     {
         $this->twig->setCache($cache);
     }
@@ -145,12 +136,12 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getTemplateClassPrefix();
     }
 
-    #[\ReturnTypeWillChange] public function render($name, array $context = array())
+    #[\ReturnTypeWillChange] public function render($name, array $context = [])
     {
         return $this->loadTemplate($name)->render($context);
     }
 
-    #[\ReturnTypeWillChange] public function display($name, array $context = array())
+    #[\ReturnTypeWillChange] public function display($name, array $context = []): void
     {
         $this->loadTemplate($name)->display($context);
     }
@@ -192,12 +183,12 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->resolveTemplate($names);
     }
 
-    #[\ReturnTypeWillChange] public function clearTemplateCache()
+    #[\ReturnTypeWillChange] public function clearTemplateCache(): void
     {
         $this->twig->clearTemplateCache();
     }
 
-    #[\ReturnTypeWillChange] public function clearCacheFiles()
+    #[\ReturnTypeWillChange] public function clearCacheFiles(): void
     {
         $this->twig->clearCacheFiles();
     }
@@ -207,7 +198,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getLexer();
     }
 
-    #[\ReturnTypeWillChange] public function setLexer(Twig_LexerInterface $lexer)
+    #[\ReturnTypeWillChange] public function setLexer(Twig_LexerInterface $lexer): void
     {
         $this->twig->setLexer($lexer);
     }
@@ -222,7 +213,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getParser();
     }
 
-    #[\ReturnTypeWillChange] public function setParser(Twig_ParserInterface $parser)
+    #[\ReturnTypeWillChange] public function setParser(Twig_ParserInterface $parser): void
     {
         $this->twig->setParser($parser);
     }
@@ -237,7 +228,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getCompiler();
     }
 
-    #[\ReturnTypeWillChange] public function setCompiler(Twig_CompilerInterface $compiler)
+    #[\ReturnTypeWillChange] public function setCompiler(Twig_CompilerInterface $compiler): void
     {
         $this->twig->setCompiler($compiler);
     }
@@ -252,7 +243,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->compileSource($source, $name);
     }
 
-    #[\ReturnTypeWillChange] public function setLoader(Twig_LoaderInterface $loader)
+    #[\ReturnTypeWillChange] public function setLoader(Twig_LoaderInterface $loader): void
     {
         $this->twig->setLoader($loader);
     }
@@ -262,7 +253,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getLoader();
     }
 
-    #[\ReturnTypeWillChange] public function setCharset($charset)
+    #[\ReturnTypeWillChange] public function setCharset($charset): void
     {
         $this->twig->setCharset($charset);
     }
@@ -272,7 +263,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getCharset();
     }
 
-    #[\ReturnTypeWillChange] public function initRuntime()
+    #[\ReturnTypeWillChange] public function initRuntime(): void
     {
         $this->twig->initRuntime();
     }
@@ -287,17 +278,17 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getExtension($name);
     }
 
-    #[\ReturnTypeWillChange] public function addExtension(Twig_ExtensionInterface $extension)
+    #[\ReturnTypeWillChange] public function addExtension(Twig_ExtensionInterface $extension): void
     {
         $this->twig->addExtension($extension);
     }
 
-    #[\ReturnTypeWillChange] public function removeExtension($name)
+    #[\ReturnTypeWillChange] public function removeExtension($name): void
     {
         $this->twig->removeExtension($name);
     }
 
-    #[\ReturnTypeWillChange] public function setExtensions(array $extensions)
+    #[\ReturnTypeWillChange] public function setExtensions(array $extensions): void
     {
         $this->twig->setExtensions($extensions);
     }
@@ -307,7 +298,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getExtensions();
     }
 
-    #[\ReturnTypeWillChange] public function addTokenParser(Twig_TokenParserInterface $parser)
+    #[\ReturnTypeWillChange] public function addTokenParser(Twig_TokenParserInterface $parser): void
     {
         $this->twig->addTokenParser($parser);
     }
@@ -322,7 +313,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getTags();
     }
 
-    #[\ReturnTypeWillChange] public function addNodeVisitor(Twig_NodeVisitorInterface $visitor)
+    #[\ReturnTypeWillChange] public function addNodeVisitor(Twig_NodeVisitorInterface $visitor): void
     {
         $this->twig->addNodeVisitor($visitor);
     }
@@ -332,7 +323,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getNodeVisitors();
     }
 
-    #[\ReturnTypeWillChange] public function addFilter($name, $filter = null)
+    #[\ReturnTypeWillChange] public function addFilter($name, $filter = null): void
     {
         $this->twig->addFilter($name, $filter);
     }
@@ -342,7 +333,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getFilter($name);
     }
 
-    #[\ReturnTypeWillChange] public function registerUndefinedFilterCallback($callable)
+    #[\ReturnTypeWillChange] public function registerUndefinedFilterCallback($callable): void
     {
         $this->twig->registerUndefinedFilterCallback($callable);
     }
@@ -352,7 +343,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getFilters();
     }
 
-    #[\ReturnTypeWillChange] public function addTest($name, $test = null)
+    #[\ReturnTypeWillChange] public function addTest($name, $test = null): void
     {
         $this->twig->addTest($name, $test);
     }
@@ -367,7 +358,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getTest($name);
     }
 
-    #[\ReturnTypeWillChange] public function addFunction($name, $function = null)
+    #[\ReturnTypeWillChange] public function addFunction($name, $function = null): void
     {
         $this->twig->addFunction($name, $function);
     }
@@ -377,7 +368,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getFunction($name);
     }
 
-    #[\ReturnTypeWillChange] public function registerUndefinedFunctionCallback($callable)
+    #[\ReturnTypeWillChange] public function registerUndefinedFunctionCallback($callable): void
     {
         $this->twig->registerUndefinedFunctionCallback($callable);
     }
@@ -387,7 +378,7 @@ class TraceableTwigEnvironment extends Twig_Environment
         return $this->twig->getFunctions();
     }
 
-    #[\ReturnTypeWillChange] public function addGlobal($name, $value)
+    #[\ReturnTypeWillChange] public function addGlobal($name, $value): void
     {
         $this->twig->addGlobal($name, $value);
     }

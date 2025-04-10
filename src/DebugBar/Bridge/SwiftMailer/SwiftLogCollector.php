@@ -27,12 +27,12 @@ class SwiftLogCollector extends MessagesCollector implements Swift_Plugins_Logge
         $mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($this));
     }
 
-    #[\ReturnTypeWillChange] public function add($entry)
+    #[\ReturnTypeWillChange] public function add($entry): void
     {
         $this->addMessage($entry);
     }
 
-    #[\ReturnTypeWillChange] public function dump()
+    #[\ReturnTypeWillChange] public function dump(): string
     {
         $dump = '';
         foreach ($this->messages as $message) {
@@ -46,7 +46,8 @@ class SwiftLogCollector extends MessagesCollector implements Swift_Plugins_Logge
         return $dump;
     }
 
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange]
+    #[\Override] public function getName(): string
     {
         return 'swiftmailer_logs';
     }

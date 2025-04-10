@@ -22,31 +22,29 @@ use Slim\Slim;
  */
 class SlimCollector extends MessagesCollector
 {
-    protected $slim;
-
     protected $originalLogWriter;
 
-    #[\ReturnTypeWillChange] public function __construct(Slim $slim)
+    #[\ReturnTypeWillChange] public function __construct(protected Slim $slim)
     {
-        $this->slim = $slim;
-        if ($log = $slim->getLog()) {
+        if ($log = $this->slim->getLog()) {
             $this->originalLogWriter = $log->getWriter();
             $log->setWriter($this);
             $log->setEnabled(true);
         }
     }
 
-    #[\ReturnTypeWillChange] public function write($message, $level)
+    #[\ReturnTypeWillChange] public function write($message, $level): void
     {
         if ($this->originalLogWriter) {
             $this->originalLogWriter->write($message, $level);
         }
+
         $this->addMessage($message, $this->getLevelName($level));
     }
 
-    protected function getLevelName($level)
+    protected function getLevelName($level): string
     {
-        $map = array(
+        $map = [
             Log::EMERGENCY => LogLevel::EMERGENCY,
             Log::ALERT => LogLevel::ALERT,
             Log::CRITICAL => LogLevel::CRITICAL,
@@ -55,11 +53,12 @@ class SlimCollector extends MessagesCollector
             Log::NOTICE => LogLevel::NOTICE,
             Log::INFO => LogLevel::INFO,
             Log::DEBUG => LogLevel::DEBUG
-        );
+        ];
         return $map[$level];
     }
 
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange]
+    #[\Override] public function getName(): string
     {
         return 'slim';
     }

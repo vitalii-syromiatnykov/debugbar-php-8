@@ -17,15 +17,12 @@ class RequestIdGenerator implements RequestIdGeneratorInterface
 {
     protected $index = 0;
 
-    /**
-     * @return string
-     */
-    #[\ReturnTypeWillChange] public function generate()
+    #[\ReturnTypeWillChange] public function generate(): string
     {
         if (function_exists('random_bytes')) {
             // PHP 7 only
             return 'X' . bin2hex(random_bytes(16));
-        } else if (function_exists('openssl_random_pseudo_bytes')) {
+        } elseif (function_exists('openssl_random_pseudo_bytes')) {
             // PHP >= 5.3.0, but OpenSSL may not always be available
             return 'X' . bin2hex(openssl_random_pseudo_bytes(16));
         } else {

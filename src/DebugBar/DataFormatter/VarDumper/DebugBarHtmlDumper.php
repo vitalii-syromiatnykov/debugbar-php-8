@@ -13,12 +13,12 @@ class DebugBarHtmlDumper extends HtmlDumper
     /**
      * Resets an HTML header.
      */
-    #[\ReturnTypeWillChange] public function resetDumpHeader()
+    #[\ReturnTypeWillChange] public function resetDumpHeader(): void
     {
         $this->dumpHeader = null;
     }
 
-    #[\ReturnTypeWillChange] public function getDumpHeaderByDebugBar() {
+    #[\ReturnTypeWillChange] public function getDumpHeaderByDebugBar(): string {
         // getDumpHeader is protected:
         return str_replace('pre.sf-dump', '.phpdebugbar pre.sf-dump', $this->getDumpHeader());
     }

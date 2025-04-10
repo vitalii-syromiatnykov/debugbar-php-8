@@ -1,6 +1,6 @@
 <?php
 
-include 'bootstrap.php';
+include __DIR__ . '/bootstrap.php';
 
 $debugbar['messages']->addMessage('hello');
 
@@ -13,12 +13,12 @@ usleep(200);
 $debugbar['time']->stopMeasure('op2');
 
 $debugbar['messages']->addMessage('world', 'warning');
-$debugbar['messages']->addMessage(array('toto' => array('titi', 'tata')));
+$debugbar['messages']->addMessage(['toto' => ['titi', 'tata']]);
 $debugbar['messages']->addMessage('oups', 'error');
 
 $debugbar['time']->startMeasure('render');
 
-render_demo_page(function() {
+render_demo_page(function(): void {
 ?>
 <h2>AJAX</h2>
 <ul>

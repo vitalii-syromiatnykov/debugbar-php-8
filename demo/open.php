@@ -1,6 +1,8 @@
 <?php
 
+use DebugBar\OpenHandler;
+
 include __DIR__ . '/bootstrap.php';
 
-$openHandler = new DebugBar\OpenHandler($debugbar);
+$openHandler = new OpenHandler($debugbar);
 $openHandler->handle();

@@ -1,11 +1,11 @@
 <?php
 
-include 'bootstrap.php';
+include __DIR__ . '/bootstrap.php';
 
 try {
     throw new Exception('Something failed!');
-} catch (Exception $e) {
-    $debugbar['exceptions']->addException($e);
+} catch (Exception $exception) {
+    $debugbar['exceptions']->addException($exception);
 }
 
 ?>

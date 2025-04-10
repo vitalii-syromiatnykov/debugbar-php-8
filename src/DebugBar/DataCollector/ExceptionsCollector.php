@@ -11,14 +11,14 @@
 namespace DebugBar\DataCollector;
 
 use Exception;
-use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 /**
  * Collects info about exceptions
  */
 class ExceptionsCollector extends DataCollector implements Renderable
 {
-    protected $exceptions = array();
+    protected $exceptions = [];
+
     protected $chainExceptions = false;
 
     // The HTML var dumper requires debug bar users to support the new inline assets, which not all
@@ -28,10 +28,9 @@ class ExceptionsCollector extends DataCollector implements Renderable
     /**
      * Adds an exception to be profiled in the debug bar
      *
-     * @param Exception $e
      * @deprecated in favor on addThrowable
      */
-    #[\ReturnTypeWillChange] public function addException(Exception $e)
+    #[\ReturnTypeWillChange] public function addException(Exception $e): void
     {
         $this->addThrowable($e);
     }
@@ -41,7 +40,7 @@ class ExceptionsCollector extends DataCollector implements Renderable
      *
      * @param \Throwable $e
      */
-    #[\ReturnTypeWillChange] public function addThrowable($e)
+    #[\ReturnTypeWillChange] public function addThrowable($e): void
     {
         $this->exceptions[] = $e;
         if ($this->chainExceptions && $previous = $e->getPrevious()) {
@@ -54,7 +53,7 @@ class ExceptionsCollector extends DataCollector implements Renderable
      *
      * @param bool $chainExceptions
      */
-    #[\ReturnTypeWillChange] public function setChainExceptions($chainExceptions = true)
+    #[\ReturnTypeWillChange] public function setChainExceptions($chainExceptions = true): void
     {
         $this->chainExceptions = $chainExceptions;
     }
@@ -76,7 +75,7 @@ class ExceptionsCollector extends DataCollector implements Renderable
      * @param bool $value
      * @return $this
      */
-    #[\ReturnTypeWillChange] public function useHtmlVarDumper($value = true)
+    #[\ReturnTypeWillChange] public function useHtmlVarDumper($value = true): static
     {
         $this->useHtmlVarDumper = $value;
         return $this;
@@ -93,18 +92,17 @@ class ExceptionsCollector extends DataCollector implements Renderable
         return $this->useHtmlVarDumper;
     }
 
-    #[\ReturnTypeWillChange] public function collect()
+    #[\ReturnTypeWillChange] public function collect(): array
     {
-        return array(
+        return [
             'count' => count($this->exceptions),
-            'exceptions' => array_map(array($this, 'formatThrowableData'), $this->exceptions)
-        );
+            'exceptions' => array_map($this->formatThrowableData(...), $this->exceptions)
+        ];
     }
 
     /**
      * Returns exception data as an array
      *
-     * @param Exception $e
      * @return array
      * @deprecated in favor on formatThrowableData
      */
@@ -117,17 +115,16 @@ class ExceptionsCollector extends DataCollector implements Renderable
      * Returns Throwable data as an array
      *
      * @param \Throwable $e
-     * @return array
      */
-    #[\ReturnTypeWillChange] public function formatThrowableData($e)
+    #[\ReturnTypeWillChange] public function formatThrowableData($e): array
     {
         $filePath = $e->getFile();
         if ($filePath && file_exists($filePath)) {
             $lines = file($filePath);
             $start = $e->getLine() - 4;
-            $lines = array_slice($lines, $start < 0 ? 0 : $start, 7);
+            $lines = array_slice($lines, max(0, $start), 7);
         } else {
-            $lines = array("Cannot open the file ($filePath) in which the exception occurred ");
+            $lines = [sprintf('Cannot open the file (%s) in which the exception occurred ', $filePath)];
         }
 
         $traceHtml = null;
@@ -135,8 +132,8 @@ class ExceptionsCollector extends DataCollector implements Renderable
             $traceHtml = $this->getVarDumper()->renderVar($e->getTrace());
         }
 
-        return array(
-            'type' => get_class($e),
+        return [
+            'type' => $e::class,
             'message' => $e->getMessage(),
             'code' => $e->getCode(),
             'file' => $filePath,
@@ -145,33 +142,27 @@ class ExceptionsCollector extends DataCollector implements Renderable
             'stack_trace_html' => $traceHtml,
             'surrounding_lines' => $lines,
             'xdebug_link' => $this->getXdebugLink($filePath, $e->getLine())
-        );
+        ];
     }
 
-    /**
-     * @return string
-     */
-    #[\ReturnTypeWillChange] public function getName()
+    #[\ReturnTypeWillChange] public function getName(): string
     {
         return 'exceptions';
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange] public function getWidgets()
+    #[\ReturnTypeWillChange] public function getWidgets(): array
     {
-        return array(
-            'exceptions' => array(
+        return [
+            'exceptions' => [
                 'icon' => 'bug',
                 'widget' => 'PhpDebugBar.Widgets.ExceptionsWidget',
                 'map' => 'exceptions.exceptions',
                 'default' => '[]'
-            ),
-            'exceptions:badge' => array(
+            ],
+            'exceptions:badge' => [
                 'map' => 'exceptions.count',
                 'default' => 'null'
-            )
-        );
+            ]
+        ];
     }
 }
